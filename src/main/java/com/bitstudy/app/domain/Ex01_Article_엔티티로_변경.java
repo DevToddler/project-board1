@@ -3,7 +3,6 @@ package com.bitstudy.app.domain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -31,7 +30,7 @@ import java.util.Set;
 		@Index(columnList = "createdDate"),
 		@Index(columnList = "createdBy"),
 })
-public class Article {
+public class Ex01_Article_엔티티로_변경 {
 
 	@Id // 전체 필드 중에 이게 PK라고 알려주는 것.
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // 해당 필드를 auto_increment 로 설정해야할 경우. 기본키 전략
@@ -97,18 +96,18 @@ public class Article {
 	/** Entity 만들 때는 무조건 기본 생성자가 필요하다.
 	 *  public 또는 protected 만 가능한데, 기본 생성자 안쓰이게 하고 싶어서 protected로 둠.
 	 * */
-	protected Article(){}
+	protected Ex01_Article_엔티티로_변경(){}
 
 	/** 사용자가 입력하는 값만 받기. 나머지는 시스템이 알아서 하도록.
 	 * */
-	private Article(String title, String content, String hashtag) {
+	private Ex01_Article_엔티티로_변경(String title, String content, String hashtag) {
 		this.title = title;
 		this.content = content;
 		this.hashtag = hashtag;
 	}
 
-	public static Article of(String title, String content, String hashtag){
-		return new Article(title, content, hashtag);
+	public static Ex01_Article_엔티티로_변경 of(String title, String content, String hashtag){
+		return new Ex01_Article_엔티티로_변경(title, content, hashtag);
 	}
 	/** 정적 팩토리 메서드 (factory method pattern 중에 하나)
 	 * 객체 생성 역할을 하는 클래스 메서드 라는 뜻.
@@ -142,7 +141,7 @@ public class Article {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		Article article = (Article) o;
+		Ex01_Article_엔티티로_변경 article = (Ex01_Article_엔티티로_변경) o;
 		return id.equals(article.id);
 	}
 
