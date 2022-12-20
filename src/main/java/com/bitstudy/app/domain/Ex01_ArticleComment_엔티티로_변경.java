@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 		@Index(columnList = "createdDate"),
 		@Index(columnList = "createdBy")
 })
-public class ArticleComment {
+public class Ex01_ArticleComment_엔티티로_변경 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
