@@ -21,11 +21,6 @@ import java.util.Set;
  * 3) 동등성, 동일성 비교할 수 있는 코드 넣어볼거임
  *
  * */
-/**JPA란 자바 ORM 기술 표준
- * Entity를 분석, createsk insert 같은 sql 쿼리를 생성해준다.
- * JDBC API 사용해서 DB 접근도 해주고 객체와 테이블을 매핑해준다.
- *
- * */
 //@Entity
 @Getter
 @ToString
@@ -35,7 +30,7 @@ import java.util.Set;
 		@Index(columnList = "createdDate"),
 		@Index(columnList = "createdBy"),
 })
-public class Ex01_Article_엔티티로_변경 {
+public class Ex02_Article_바인딩_설정 {
 
 	@Id // 전체 필드 중에 이게 PK라고 알려주는 것.
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // 해당 필드를 auto_increment 로 설정해야할 경우. 기본키 전략
@@ -52,6 +47,23 @@ public class Ex01_Article_엔티티로_변경 {
 	@Setter
 	private String hashtag; // 해시태그
 
+	/**
+	 * 양방향 바인딩
+	 */
+	@OrderBy("id") // 양방향 바인딩을 할건데 정렬 기준을 id로 하겠다는 뜻
+	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+	@ToString.Exclude
+	/** (중요) 맨 위 @ToString이 있는데 lazy load 관련 이슈로
+	 *  퍼포먼스, 메모리 저하를 일으킬 수 있어서 성능적으로 안좋은 영향을 줄 수 있다. 그래서 해당 필드를 가려주세요 라는 의미의 어노테이션.
+	 */
+	private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
+	/** (중요)!!!!!순환 참조 이슈
+	 * @ToString.Exclude 를 달아주지 않으면 순환참조 이슈가 생길 수 있다.
+	 * ToString이 id, title, content, hashtag, 다 찍고 Set<ArticleComment> 부분을 찍으려고 하면서 private Article article; 을 보는 순간
+	 * Article의 @ToString이 다시 반복적으로 동작하면서 메모리가 터질 수 있다.
+	 *
+	 * ArticleComment에 걸지 않고 Article에 걸어주는 이유는 댓글이 글을 참조하는 건 정상적인 경우이지만, 반대로 글이 댓글을 참조하는건 일반적인 경우는 아니기 때문.
+	 * */
 
 	/* JPA auditing : JPA 에서 자동으로 세팅하게 해줄 때 사용하는 기능. config 파일이 별도로 있어야 한다. (JpaConfig)
 	* 아래와 같이 어노테이션 붙여주기만 하면 auditing이 작동한다.
@@ -84,18 +96,18 @@ public class Ex01_Article_엔티티로_변경 {
 	/** Entity 만들 때는 무조건 기본 생성자가 필요하다.
 	 *  public 또는 protected 만 가능한데, 기본 생성자 안쓰이게 하고 싶어서 protected로 둠.
 	 * */
-	protected Ex01_Article_엔티티로_변경(){}
+	protected Ex02_Article_바인딩_설정(){}
 
 	/** 사용자가 입력하는 값만 받기. 나머지는 시스템이 알아서 하도록.
 	 * */
-	private Ex01_Article_엔티티로_변경(String title, String content, String hashtag) {
+	private Ex02_Article_바인딩_설정(String title, String content, String hashtag) {
 		this.title = title;
 		this.content = content;
 		this.hashtag = hashtag;
 	}
 
-	public static Ex01_Article_엔티티로_변경 of(String title, String content, String hashtag){
-		return new Ex01_Article_엔티티로_변경(title, content, hashtag);
+	public static Ex02_Article_바인딩_설정 of(String title, String content, String hashtag){
+		return new Ex02_Article_바인딩_설정(title, content, hashtag);
 	}
 	/** 정적 팩토리 메서드 (factory method pattern 중에 하나)
 	 * 객체 생성 역할을 하는 클래스 메서드 라는 뜻.
@@ -129,7 +141,7 @@ public class Ex01_Article_엔티티로_변경 {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		Ex01_Article_엔티티로_변경 article = (Ex01_Article_엔티티로_변경) o;
+		Ex02_Article_바인딩_설정 article = (Ex02_Article_바인딩_설정) o;
 		return id.equals(article.id);
 	}
 
