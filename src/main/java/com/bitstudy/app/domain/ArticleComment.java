@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @Table(indexes = {
-//		@Index(columnList = "article"),
+		@Index(columnList = "content"),
 		@Index(columnList = "createdDate"),
 		@Index(columnList = "createdBy")
 })
@@ -26,7 +26,6 @@ public class ArticleComment {
 
 	@Setter
 	@ManyToOne(optional = false)
-//	@JoinColumn(name = "Article_id")
 	private Article article;
 	/**연관관계 매핑(JPA 스타일)
 	 *

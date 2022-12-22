@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ import java.util.Set;
  * 3) 동등성, 동일성 비교할 수 있는 코드 넣어볼거임
  *
  * */
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Getter
 @ToString
