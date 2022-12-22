@@ -24,4 +24,4 @@ public class JpaConfig {
 		// 이렇게 하면 앞으로 JPA auditing 할 때마다 사람이름은 이걸로 넣게 된다.
 		// TODO: 나중에 스프링 시큐리티로 인증기능 붙일 때 수정 필요.
 	}
-}
+} 
