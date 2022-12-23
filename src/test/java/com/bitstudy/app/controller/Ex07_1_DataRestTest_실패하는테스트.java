@@ -4,12 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -43,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  */
 @WebMvcTest
-public class DataRestTest {
+public class Ex07_1_DataRestTest_실패하는테스트 {
 	/** MockMvc 테스트 방법
 	 *  1) MockMvc 생성(bean 준비)
 	 *  2) MockMvc 에게 요청에 대한 정보를 입력
@@ -53,7 +49,7 @@ public class DataRestTest {
 	 * */
 	private final MockMvc mvc; // bean 준비
 
-	public DataRestTest(@Autowired MockMvc mvc) {
+	public Ex07_1_DataRestTest_실패하는테스트(@Autowired MockMvc mvc) {
 		this.mvc = mvc;
 	}
 

@@ -14,7 +14,7 @@ import javax.persistence.*;
 		@Index(columnList = "createdDate"),
 		@Index(columnList = "createdBy")
 })
-public class Ex07_ArticleComment_공통코드 extends AuditingFields{
+public class Ex06_ArticleComment_공통코드 extends AuditingFields{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
