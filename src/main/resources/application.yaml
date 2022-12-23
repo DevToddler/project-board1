@@ -11,15 +11,16 @@ logging:
 
 spring:
   datasource:
-#    url: jdbc:mysql://localhost:3306/board
-#    username: bitstudy
-#    password: 1234
-#    driver-class-name: com.mysql.cj.jdbc.Driver
+    # MySQL 사용할 때
+    url: jdbc:mysql://localhost:3306/board
+    username: bitstudy
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
     # h2 DB 를 사용 할 때 아래와 같이 설정
-    url: jdbc:h2:mem:testdb
-    username: sa
-    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:mem:testdb
+#    username: sa
+#    driver-class-name: org.h2.Driver
   jpa:
     defer-datasource-initialization: true
     hibernate.ddl-auto: create
@@ -29,6 +30,17 @@ spring:
       hibernate.default_batch_fetch_size: 100
 
 
-#  h2.console.enabled: false
-  h2.console.enabled: true # h2 DB를 사용할 때 true
+  h2.console.enabled: false
+  # h2.console.enabled: true # h2 DB를 사용할 때 true
   sql.init.mode: always
+
+  # data rest 세팅
+  data:
+    rest:
+      base-path: /api # 우리가 엑셀에서 설계한 루트 url보면 /api 로 되어있다. 그거 쓰면 된다.
+      detection-strategy: annotated
+      # detection-strategy - 프로젝트의 레포지토리를 확인할건데, 이 레포지토리를 rest api로 노출시킬건지 결정하는 부분
+      # DEFAULT - 모든 PUBLIC 레포지토리 인터페이스를 표시할건데, 그러나 @(Repository)RestResource 가 포함된 것만 노출
+      # ALL - 모든 레포지토리 
+      # ANNOTATED - 지정한 것만 노출
+      # VISIBILITY - 레포지토리를 public 으로 노출한 것만
