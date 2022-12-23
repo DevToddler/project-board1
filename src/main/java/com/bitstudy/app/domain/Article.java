@@ -16,6 +16,8 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+
+
 /* Lombok 사용하기
  *
  * 1) 롬복을 이용해서 클래스를 엔티티로 변경
@@ -23,7 +25,7 @@ import java.util.Set;
  * 3) 동등성, 동일성 비교할 수 있는 코드 넣어볼거임
  *
  * */
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Getter
 @ToString
@@ -33,7 +35,7 @@ import java.util.Set;
 		@Index(columnList = "createdDate"),
 		@Index(columnList = "createdBy"),
 })
-public class Article {
+public class Article extends AuditingFields{
 
 	@Id // 전체 필드 중에 이게 PK라고 알려주는 것.
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // 해당 필드를 auto_increment 로 설정해야할 경우. 기본키 전략
@@ -76,24 +78,64 @@ public class Article {
     * @LastModifiedBy : 작성 당시의 작성자를 실시간으로 넣어준다.
 	* */
 
-	//메타 데이터
-	@CreatedDate
-	@Column(nullable = false)
-	private LocalDateTime createdDate; // 생성일시
+	/**************************************************************************/
+	/**Article과 ArticleComment 에 있는 공통 필드(메타 데이터. ID제외)들을 별도로 빼서 관리할 것이다.
+	 * 이유는 앞으로 Article 과 ArticelComment 처럼 fk 등으로 엮여 있는 테이블들을 만들 경우,
+	 * domain안에 있는 파일들에 많은 중복코드들이 들어가게된다. 그래서 별도의 파일에 공통되는 것들을 다 몰아 넣고 사용해보기
+	 *
+	 * 참고 : 회사마다 팀마다 선호하는 스타일이 다르다.
+	 *
+	 * 추출은 두가지 방법으로 할 수있다.
+	 * 1) @Embedded - 공통되는 필드들을 하나의 클래스로 만들어서 @Embedded 있는 곳에서 치환하는 방식
+	 * 2) @MappedSuperClass - (요즘 실무에서 사용하는 방식) @MappedSuperClass 어노테이션이 붙은 곳에서 사용
+	 *
+	 * 둘의 차이 : 사실은 둘이 비슷하지만 @Embedded 방식을 하게 되면 필드가 하나 추가된다.
+	 * 			 영속성 컨텍스트를 통해서 데이터를 넘겨 받아서 어플리케이션으로 열었을 때에는 어차피 AuditingField 와 똑같아 보인다.
+	 * 			 (중간에 한단계가 더 있다는 뜻)
+	 *
+	 * 			 @MappedSuperClass 는 표준 JPA 에서 제공해주는 클래스. 중간단계 따로 없이 바로 동작한다.
+	 * */
+//	//메타 데이터
+//	@CreatedDate
+//	@Column(nullable = false)
+//	private LocalDateTime createdDate; // 생성일시
+//
+//	@CreatedBy
+//	@Column(nullable = false, length = 100)
+//	private String createdBy; // 생성자
+//	// 최초 생성자는 (현재 코드 상태로는) 인증받고 오지 않았기 때문에 따로 알아낼 수가 없다. 이 때, JpaConfig 파일을 사용한다.
+//
+//	@LastModifiedDate
+//	@Column(nullable = false)
+//	private LocalDateTime modifiedDate; // 수정일시
+//
+//	@LastModifiedBy
+//	@Column(nullable = false, length = 100)
+//	private String modifiedBy; // 수정자
 
-	@CreatedBy
-	@Column(nullable = false, length = 100)
-	private String createdBy; // 생성자
-	// 최초 생성자는 (현재 코드 상태로는) 인증받고 오지 않았기 때문에 따로 알아낼 수가 없다. 이 때, JpaConfig 파일을 사용한다.
+	/** 1) Embedded 방식 */
+//	class Tmp{
+//		//메타 데이터
+//		@CreatedDate
+//		@Column(nullable = false)
+//		private LocalDateTime createdDate; // 생성일시
+//
+//		@CreatedBy
+//		@Column(nullable = false, length = 100)
+//		private String createdBy; // 생성자
+//		// 최초 생성자는 (현재 코드 상태로는) 인증받고 오지 않았기 때문에 따로 알아낼 수가 없다. 이 때, JpaConfig 파일을 사용한다.
+//
+//		@LastModifiedDate
+//		@Column(nullable = false)
+//		private LocalDateTime modifiedDate; // 수정일시
+//
+//		@LastModifiedBy
+//		@Column(nullable = false, length = 100)
+//		private String modifiedBy; // 수정자
+//	}
+//	@Embedded Tmp tmp;
 
-	@LastModifiedDate
-	@Column(nullable = false)
-	private LocalDateTime modifiedDate; // 수정일시
-
-	@LastModifiedBy
-	@Column(nullable = false, length = 100)
-	private String modifiedBy; // 수정자
-
+	/**************************************************************************/
 
 
 	/** Entity 만들 때는 무조건 기본 생성자가 필요하다.
