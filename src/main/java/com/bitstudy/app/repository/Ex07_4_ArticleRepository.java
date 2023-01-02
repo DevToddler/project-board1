@@ -12,7 +12,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 /** QueryDsl 의 QuerydslPredicateExecutor 와 QuerydslBinderCustomizer 를 이용해서 검색 기능을 만들어 볼거다.*/
 @RepositoryRestResource
-public interface ArticleRepository extends JpaRepository<Article, Long>, QuerydslPredicateExecutor<Article>, QuerydslBinderCustomizer<QArticle> {
+public interface Ex07_4_ArticleRepository extends JpaRepository<Article, Long>, QuerydslPredicateExecutor<Article>, QuerydslBinderCustomizer<QArticle> {
 	/* 조심할 것 : QuerydslBinderCustomizer 는 QArticle 을 사용하므로 build.gradle에서 queryDsl을 빌드 하고 와야한다. */
 
 	/* QuerydslPredicateExecutor 는 Article 안에 있는 모든 필드에 대한 기본 검색기능을 추가해준다.
