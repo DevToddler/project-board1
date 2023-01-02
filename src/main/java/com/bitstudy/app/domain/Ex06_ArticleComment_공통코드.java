@@ -6,7 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
-@Entity
+//@Entity
 @Getter
 @ToString
 @Table(indexes = {

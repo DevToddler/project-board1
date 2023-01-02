@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 	- 슬라이스 테스트 애너테이션
  * 	1) @WdbMvcTest - 슬라이스 테스트에서 대표적인 어노테이션
  * 					 Controller를 테스트 할 수 있도록 관련 설정을 제공해준다.
- * 					 @WdbMvcTest 를 선언하면 web과 관련된 Bean만 주입되고, MockMvc를 알아볼 수 있게 된다.
+ * 					 @WebMvcTest 를 선언하면 web과 관련된 Bean만 주입되고, MockMvc를 알아볼 수 있게 된다.
  *
  * 					 * MockMvc는 웹 어플리케이션을 어플리케이션 서버에 배포하지 않고, 가짜로 테스트용 MVC 환경을 만들어서 요청 및 전송, 응답기능을 제공해주는 유틸리티 클래스.
  * 					   간단히 말하면, 내가 컨트롤러 테스트하고 싶을 때 실제 서버에 올리지 않고 테스트 용으로 시뮬레이션해서 MVC가 되도록 해주는 클래스
@@ -39,26 +39,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  */
 @WebMvcTest
-public class Ex07_1_DataRestTest_실패하는테스트 {
+public class Ex07_3_1_DataRestTest_실패하는테스트 {
 	/** MockMvc 테스트 방법
 	 *  1) MockMvc 생성(bean 준비)
 	 *  2) MockMvc 에게 요청에 대한 정보를 입력
 	 *  3) 요청에 대한 응답값을 expect를 이용해서 테스트 한다.
 	 *  4) expect 다 통과하면 테스트 통과
-	 *
 	 * */
-	private final MockMvc mvc; // bean 준비
+	private final MockMvc mvc; /* 1) MockMvc 생성 (빈 준비)*/
 
-	public Ex07_1_DataRestTest_실패하는테스트(@Autowired MockMvc mvc) {
+	public Ex07_3_1_DataRestTest_실패하는테스트(@Autowired MockMvc mvc) { /* 2) MockMvc 에게 요청에 대한 정보를 입력(주입) */
 		this.mvc = mvc;
 	}
+
 
 	// [api] - 게시글 리스트 전체 조회
 	@DisplayName("[api] - 게시글 리스트 전체 조회")
 	@Test
 	void articles() throws Exception {
 
-		/** 일단 이 테스트는 실패해야 정상. 이유는 해당 api를 찾을 수 없기 때문
+		/** 일단 이 테스트는 실패해야 정상이다. 이유는 해당 api를 찾을 수 없기 때문
 		 * 콘솔창에 MockHttpServletRequest 부분에 URI="/api/articles" 있을거다. 복사해서 브라우저에 다음 주소(http://localhost:8080/api/articles)를 넣어보면 데이터가 제대로 나온다.
 		 *
 		 * 근데 여기서는 왜 안되냐면 @WebMvcTest는 슬라이스 테스트이기 때문에 controller 외의 bean들은 로드하지 않았기 때문이다.
@@ -69,7 +69,7 @@ public class Ex07_1_DataRestTest_실패하는테스트 {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.valueOf("application/hal+json")));
 
-
+//		**위와 같은 내용이다.
 //		mvc.perform(MockMvcRequestBuilders.get("/api/articles"))
 //				.andExpect(MockMvcResultMatchers.status().isOk())
 //				.andExpect(MockMvcResultMatchers.content().contentType(MediaType.valueOf("application/hal+json")));

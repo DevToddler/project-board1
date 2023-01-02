@@ -18,7 +18,7 @@ import java.util.Set;
  *
  * */
 //@EntityListeners(AuditingEntityListener.class)
-@Entity
+//@Entity
 @Getter
 @ToString
 @Table(indexes = {
