@@ -35,8 +35,39 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// queryDSL 설정 (아래에 관련 내용 더 있음)
+	implementation "com.querydsl:querydsl-jpa"
+	implementation "com.querydsl:querydsl-core"
+	implementation "com.querydsl:querydsl-collections"
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa" // querydsl JPAAnnotationProcessor 사용 지정
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 대응 코드
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api" // java.lang.NoClassDefFoundError (javax.annotation.Entity) 대응 코드
+
 } 
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+//////////////  queryDSL 설정부  시작 ////////////////////////////
+// queryDSL 설정
+// 이 부분은 없더라도 queryDSL은 정상동작한다. 그러나 인텔리제이에서 build 하다가 가끔씩 이슈가 터져서 작성해주는 부분이다.
+def generated = 'src/main/generated' // 파일 경로를 지정해주는 것. 원래는 실행하면 알아서 generated 폴더가 만들어진다. (안생기면 직접 생성하자)
+
+// queryDSL QClass 파일 생성 위치를 지정
+tasks.withType(JavaCompile) {
+	options.getGeneratedSourceOutputDirectory().set(file(generated))
+}
+
+// java source set 에 querydsl QClass 위치 추가
+sourceSets {
+	main.java.srcDirs += [ generated ]
+}
+
+// gradle clean 시에 QClass 디렉토리 삭제
+clean {
+	delete file(generated)
+}
+
+/* 이거 넣고 우측탭의 Gradle > Tasks > build > build 더블클릭 하면 generated 폴더 생길것이다. */
