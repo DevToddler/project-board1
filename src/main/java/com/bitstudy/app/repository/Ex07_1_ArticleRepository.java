@@ -10,6 +10,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
  *
  * */
 @RepositoryRestResource
-public interface ArticleRepository extends JpaRepository<Article, Long> {
+public interface Ex07_1_ArticleRepository extends JpaRepository<Article, Long> {
 
 }

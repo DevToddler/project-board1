@@ -24,10 +24,7 @@ class Ex04_JpaRepositoryTest {
 
 	private final Ex04_ArticleRepository_기본테스트용 articleRepository;
 	private final Ex05_ArticleCommentRepository_기본테스트용 articleCommentRepository;
-//	@Autowired
-//	private ArticleCommentRepository articleCommentRepository;
-//	@Autowired
-//	private ArticleRepository articleRepository;
+
 	/**원래는 둘 다 @Autowired 가 붙어야 하는데, JUnit5 버전과 Spring Boot 최신 버전을 이용하면 Test에서 생성자 주입패턴을 사용할 수 있다.*/
 
 	/**생성자 만들기 - 여기서는 다른 파일에서 매개변수로 보내주는걸 받는 거라서 위와 상관없이 @Autowired를 붙여야 한다.*/

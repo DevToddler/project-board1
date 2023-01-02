@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @MappedSuperclass
-public class Ex08_AuditingFields_공통코드 {
+public class Ex06_AuditingFields_공통코드 {
 	//메타 데이터
 	@CreatedDate
 	@Column(nullable = false)
