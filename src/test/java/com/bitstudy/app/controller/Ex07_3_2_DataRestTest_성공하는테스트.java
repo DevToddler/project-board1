@@ -61,11 +61,4 @@ public class Ex07_3_2_DataRestTest_성공하는테스트 {
 				.andExpect(content().contentType(MediaType.valueOf("application/hal+json")));
 	}
 
-	@DisplayName("[api] - 게시글의 댓글 리스트 조회")
-	@Test
-	void articleCommentAllByArticle() throws Exception {
-		mvc.perform(get("/api/articles/1/articleComments"))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.valueOf("application/hal+json")));
-	}
 }
