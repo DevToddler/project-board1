@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>게시판 페이지</title>
+</head>
+<body>
+<!-- 이 파일이 있어야 Ex08_2 번 테스트의 articlesAll() 테스트를 돌려볼 수 있다.
+     이 파일의 코드가 바뀔 때 마다 리컴파일 해주는 걸 추천(ctrl + shift + f9), 혹시 안되면 저장하고 리컴파일 재시도
+-->
+    <header>헤더</header>
+    <hr/>
+
+    <main>
+        <form action="#">
+            <select id="search-type">
+                <option value="">제목</option>
+                <option value="">본문</option>
+                <option value="">id</option>
+                <option value="">닉네임</option>
+                <option value="">해시태그</option>
+            </select>
+
+            <input type="search" placeholder="검색어를 입력하세요" name="search-value" id="search-value">
+
+            <button type="submit">검색</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>제목</th>
+                    <th>해시태그</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1번글</td>
+                    <td>1번글</td>
+                    <td>1번글</td>
+                    <td>1번글</td>
+                </tr>
+            </tbody>
+        </table>
+
+<!-- 페이지네이션-->
+        <nav>
+            <table>
+                <tbody>
+
+                </tbody>
+            </table>
+        </nav>
+
+
+    </main>
+<hr/>
+
+    <footer></footer>
+</body>
+</html>
