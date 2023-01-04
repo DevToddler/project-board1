@@ -4,6 +4,7 @@ package com.bitstudy.app.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -29,5 +30,13 @@ public class ArticleController {
 		/* Model 은 인터페이스, ModelMap 은 클래스(구현체) */
 		map.addAttribute("articles", List.of()); // 키 : articles, 값: 그냥 list
 		return "articles/index";
+	}
+
+	@GetMapping("/{articleId}")
+	public String article(@PathVariable Long articleId, ModelMap map) {
+//		map.addAttribute("article", null);
+		map.addAttribute("article", "aaa"); // 지금 당장은 받아오지 않기 때문에 null 이라고 넣었지만 테스트 할 때는 아무 문자열이라도 넣어서 모델에 담기도록 한다.
+		map.addAttribute("articleComments", List.of());
+		return "articles/detail";
 	}
 }
