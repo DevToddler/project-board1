@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<thlogic>
+    <attr sel="#header" th:replace="header :: #header" />
+    <attr sel="#footer" th:replace="footer :: #footer" />
+</thlogic>
+
+<!-- 디커플드 로직이 제대로 연결이 됐으면 'ctrl + 파일명' 부분 클릭하면해당 파일이 열린다.-->
