@@ -32,13 +32,13 @@ class Ex09_3_ArticleControllerTest_타임리프적용후게이글페이지관련
 	/**테스트는 엑셀 api 순서대로 만들거다
 
 	 * 엑셀 api 에 정의해놓은 view 부분의 url.
-	 	/articles					GET 게시판 페이지
-	 	/articles/{article-id}		GET 게시판 페이지
-	 	/articles/search			GET 게시판 검색 전용 페이지
-	 	/articles/search-hashtag	GET 게시판 해시태그 검색 전용 페이지
+	 /articles					GET 게시판 페이지
+	 /articles/{article-id}		GET 게시판 페이지
+	 /articles/search			GET 게시판 검색 전용 페이지
+	 /articles/search-hashtag	GET 게시판 해시태그 검색 전용 페이지
 	 */
 
-//	1) 게시판 리스트 페이지
+	//	1) 게시판 리스트 페이지
 	@Test
 	@DisplayName("[view][GET] 게시판 리스트 페이지 - 정상호출")
 	public void articleAll() throws Exception {
@@ -51,16 +51,16 @@ class Ex09_3_ArticleControllerTest_타임리프적용후게이글페이지관련
 		/** 설명 */
 		/**
 		 ### content().contentTypeCompatibleWith(MediaType.TEXT_HTML) ###
-		 	뷰를 html로 코드를 짜고 있을것이다. /articles 로 받아온 데이터의 미디어 타입이 html 타입으로 되어있는지 확인
-		  	contentType 의 경우 exact match 라서 미디어타입이 딱 text/html 로 나오는 것만 허용하기 때문에
-		  	contentTypeCompatibleWith 을 이용해서 호환되는 타입까지 맞다고 해주는 것.
+		 뷰를 html로 코드를 짜고 있을것이다. /articles 로 받아온 데이터의 미디어 타입이 html 타입으로 되어있는지 확인
+		 contentType 의 경우 exact match 라서 미디어타입이 딱 text/html 로 나오는 것만 허용하기 때문에
+		 contentTypeCompatibleWith 을 이용해서 호환되는 타입까지 맞다고 해주는 것.
 
 		 ### view().name("articles/index") ###
-		 	가져온 뷰 파일명이 index 인지 확인.
+		 가져온 뷰 파일명이 index 인지 확인.
 
 		 ### model().attributeExists("articles") ###
-		 	이 뷰에서는 게시글 들이 떠야 하는데, 이는 서버에서 데이터들을 가져왔다는 말이다. 그러면 모델 어트리뷰트로 데이터를 밀어넣어줬다는 말인데 그게 있는지 없는지 확인.
-		 	articles는 개발자가 임의로 걸어주는 키값, 맵에 articles라는 키가 있는지 검색해라 라는 뜻.
+		 이 뷰에서는 게시글 들이 떠야 하는데, 이는 서버에서 데이터들을 가져왔다는 말이다. 그러면 모델 어트리뷰트로 데이터를 밀어넣어줬다는 말인데 그게 있는지 없는지 확인.
+		 articles는 개발자가 임의로 걸어주는 키값, 맵에 articles라는 키가 있는지 검색해라 라는 뜻.
 
 		 * */
 	}
