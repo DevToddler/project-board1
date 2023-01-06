@@ -2,6 +2,7 @@ package com.bitstudy.app.repository;
 
 import com.bitstudy.app.config.JpaConfig;
 import com.bitstudy.app.domain.Article;
+import com.bitstudy.app.domain.UserAccount;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,10 +18,12 @@ class JpaRepositoryTest {
 
 	private final ArticleRepository articleRepository;
 	private final ArticleCommentRepository articleCommentRepository;
+	private final UserAccountRepository userAccountRepository;
 
-	JpaRepositoryTest(@Autowired ArticleRepository articleRepository, @Autowired ArticleCommentRepository articleCommentRepository) {
+	JpaRepositoryTest(@Autowired ArticleRepository articleRepository, @Autowired ArticleCommentRepository articleCommentRepository, @Autowired UserAccountRepository userAccountRepository) {
 		this.articleRepository = articleRepository;
 		this.articleCommentRepository = articleCommentRepository;
+		this.userAccountRepository = userAccountRepository;
 	}
 
 	//select Test
@@ -33,7 +36,8 @@ class JpaRepositoryTest {
 	//insert Test
 	@Test
 	void insertTest(){
-		Article article = Article.of("제목", "본문", "#해시태그");
+		UserAccount userAccount = userAccountRepository.save(UserAccount.of("bitstudy", "asdf", "test@email.com", "testNick", "testMemo"));
+		Article article = Article.of(userAccount, "제목", "본문", "#해시태그");
 		long prevCnt = articleRepository.count();
 		articleRepository.save(article);
 		assertThat(articleRepository.count()).isEqualTo(prevCnt + 1);
