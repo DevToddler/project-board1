@@ -3,7 +3,6 @@ package com.bitstudy.app.service;
 import com.bitstudy.app.domain.Article;
 import com.bitstudy.app.domain.UserAccount;
 import com.bitstudy.app.domain.type.SearchType;
-import com.bitstudy.app.dto.ArticleCommentDto;
 import com.bitstudy.app.dto.ArticleDto;
 import com.bitstudy.app.dto.ArticleWithCommentsDto;
 import com.bitstudy.app.dto.UserAccountDto;
@@ -14,21 +13,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-
-//import static org.junit.jupiter.api.Assertions.*;
-import static org.assertj.core.api.Assertions.assertThat; // 임포트 임의로 작성해주고 static 삭제했음
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.lenient;
 
 /**
  * 서비스 비즈니스 로직은 슬라이스 테스트 기능 사용 안하고 만들어 볼거다.
@@ -38,7 +31,7 @@ import static org.mockito.Mockito.lenient;
  * @ExtendWith(MockitoExtension.class) 쓰면 된다.
  */
 @ExtendWith(MockitoExtension.class)
-class ArticleServiceTest {
+class Ex11_2_ArticleServiceTest {
 	/** Mock 을 주입하는 거에다가 @InjectMocks 을 달아줘야한다. 그 외의 것들에는 @Mock 달아준다.
 	 * */
 	@InjectMocks

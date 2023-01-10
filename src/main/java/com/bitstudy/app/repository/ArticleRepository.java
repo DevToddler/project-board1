@@ -4,6 +4,8 @@ import com.bitstudy.app.domain.Article;
 import com.bitstudy.app.domain.QArticle;
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.StringExpression;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
@@ -21,6 +23,13 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Queryds
 	*  1) 바인딩
 	*  2) 검색용 필드를 추가
 	* */
+
+	Page<Article> findByTitleContaining(String searchKeyword, Pageable pageable);
+	Page<Article> findByContentContaining(String searchKeyword, Pageable pageable);
+	Page<Article> findByUserAccount_UserIdContaining(String searchKeyword, Pageable pageable);
+	Page<Article> findByUserAccount_NicknameContaining(String searchKeyword, Pageable pageable);
+	Page<Article> findByHashtagContaining(String searchKeyword, Pageable pageable);
+
 
 
 
