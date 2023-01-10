@@ -2,6 +2,21 @@
 <thlogic>
     <attr sel="#header" th:replace="header :: #header" />
     <attr sel="#footer" th:replace="footer :: #footer" />
+
+<!-- 데이터 매핑   -->
+    <attr sel="#article-table">
+        <attr sel="tbody" th:remove="all-but-first">
+        <!-- tbody 안에 있는 tr 들을 첫번째요소(tr) 빼고 다 지우기
+             하나만 남겨놓은 이유 : 기본 포멧이 필요해서이다.-->
+            <attr sel="tr[0]" th:each="article: ${articles}">
+                <attr sel="td.title/a" th:text="${article.title}" th:href="@{'/articles/'+${article.id}}"/>
+                <attr sel="td.hashtag/a" th:text="${article.hashtag}" th:href="@{'/articles/'+${article.id}}"/>
+                <attr sel="td.user-id/a" th:text="${article.nickname}" th:href="@{'/articles/'+${article.id}}"/>
+                <attr sel="td.created-date/a" th:datetime="${article.createdDate}" th:text="${#temporals.format(article.createdDate, 'yyyy-MM-dd')}"/>
+                <!-- temporals-->
+            </attr>
+        </attr>
+    </attr>
 </thlogic>
 
 <!-- 디커플드 로직이 제대로 연결이 됐으면 'ctrl + 파일명' 부분 클릭하면해당 파일이 열린다.-->

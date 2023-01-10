@@ -12,9 +12,19 @@ import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+import java.util.List;
+
 /** QueryDsl 의 QuerydslPredicateExecutor 와 QuerydslBinderCustomizer 를 이용해서 검색 기능을 만들어 볼거다.*/
 @RepositoryRestResource
 public interface ArticleCommentRepository extends JpaRepository<ArticleComment, Long>, QuerydslPredicateExecutor<ArticleComment>, QuerydslBinderCustomizer<QArticleComment> {
+
+	/** 게시글에 딸려있는 댓글 검색*/
+	/** 중요!!
+	 	findByArticle_Id
+	 	게시글로 댓글을 검색해야 하는데 이런 경우 사용하는 방법이고
+	 	ArticleComment 안에는 Article 이랑 UserAccout 가 있는데 그 안에 있는 객체 이름인 Article을 쓰고 언더바를 붙여주면
+	 	 그 객체 안으로 들어간다  => findByArticle_Id 는 ArticleComment 안의 Article 의 id 라는 뜻 */
+	List<ArticleComment> findByArticle_Id(long articleId);
 
 	@Override
 	default void customize(QuerydslBindings bindings, QArticleComment root){
