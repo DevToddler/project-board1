@@ -24,12 +24,13 @@ dependencies {
 
 	// spring security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-
 	// thymeleaf
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
 	//security + thymeleaf
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+	//security-test
+	testImplementation 'org.springframework.security:spring-security-test'
+
 
 	// JPA, H2, MySQL 추가
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
