@@ -1,7 +1,4 @@
-<!-- 타임리프의 deCoupled 로직 적용해보기.
- 여기 파일을 다 HTML 로만 구성
-    th:replace 들을 다 삭제
-    -->
+<!-- 할일: 맨 아래 페이지네이션 작업 -->
 
 <!DOCTYPE html>
 <html>
@@ -37,10 +34,14 @@
     </symbol>
 </svg>
 
-<header id="header"></header>
+<header id="header">
+    header 삽입부
+    <hr />
+</header>
+
 
 <main id="article-main" class="container">
-    <header id="article-header" class="py-5 text-center">
+    <header class="py-5 text-center" id="article-header">
         <h2>1번글</h2>
     </header>
 
@@ -64,7 +65,7 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-between lh-sm">
                     <div>
-                        <h6 class="my-0"><time id="created-date">2023-01-06</time></h6>
+                        <h6 class="my-0"><time id="created-at">2023-01-06</time></h6>
                     </div>
                 </li>
                 <li class="list-group-item d-flex justify-content-between bg-light">
@@ -76,7 +77,7 @@
         </aside>
 
         <!-- 게시글-->
-        <div class="col-md-7 col-lg-8" id="content_body">
+        <div class="col-md-7 col-lg-8" id="content-body">
             <p>본문</p>
         </div>
 
@@ -85,92 +86,68 @@
 
     <!-- 댓글 -->
     <div class="row g-5">
-        <section>
-            <form class="row g-3">
-                <div class="col-8">
-                    <label for="comment-txtarea" hidden>댓글</label>
-                    <textarea class="form-control" id="comment-txtarea" placeholder="댓글을 입력하시오" rows="5"></textarea>
-                </div>
-                <div class="col-auto">
-                    <label for="comment-submit" hidden>댓글 쓰기</label>
-                    <button type="submit" class="btn btn-primary" id="comment-submit">쓰기</button>
-                </div>
-            </form>
+        <div class="col-md-7 col-lg-8">
+            <section>
+                <form class="row g-3">
+                    <div class="col-8">
+                        <label for="comment-txtarea" hidden>댓글</label>
+                        <textarea class="form-control" id="comment-txtarea" placeholder="댓글을 입력하시오" rows="3"></textarea>
+                    </div>
+                    <div class="col-auto">
+                        <label for="comment-submit" hidden>댓글 쓰기</label>
+                        <button type="submit" class="btn btn-primary" id="comment-submit">쓰기</button>
+                    </div>
+                </form>
 
-            <ul id="comment-ul">
-                <li>
-                    <strong id="comment-nickname">kh정보교육원</strong>
-                    <time id="comment-createdDate">2023-01-06</time>
-                    <p id="comment-content">댓글인데 뭐라고 해야될지 모르겠다. 어제 한 dto 너무 어렵다. <br>
-                        집에 가고싶다.</p>
-                </li>
+                <ul id="article-comments">
+                    <li>
+                        <strong>kh정보교육원</strong>
+                        <time>2023-01-06</time>
+                        <p>댓글인데 뭐라고 해야될지 모르겠다. 어제 한 dto 너무 어렵다. <br>
+                            집에 가고싶다.</p>
+                    </li>
 
-            </ul>
+                    <li>
+                        <strong>goodjob0412</strong>
+                        <time>2023-01-06</time>
+                        <p>댓글인데 뭐라고 해야될지 모르겠다. 어제 한 dto 너무 어렵다. <br>
+                            집에 가고싶다.</p>
+                    </li>
 
-        </section>
+                </ul>
 
+            </section>
+
+        </div>
     </div>
 
 
+    <!-- 새로 생성 -->
+    <!-- 페이지네이션 -->
+    <nav class="d-flex justify-content-center" id="pagination">
+        <ul class="pagination pagination-base pagination-boxed pagination-square mb-0">
+            <li class="page-item">
+                <a class="page-link no-border" href="#">
+                    <span aria-hidden="true">«</span>
+                    <span class="sr-only">Prev</span>
+                </a>
+            </li>
 
-
-
-    <!--    ////////////////////////////////////////////////////////////////-->
-    <!--<header> 1번글 </header>
-
-    <aside>
-      <p>bitstudy</p>
-      <p><a href="mailto:goodjob0412@gmail.com">goodjob0412@gmail.com</a>goodjob0412@gmail.com</p>
-      <p>2023-01-04</p>
-      <p>#java</p>
-    </aside>
-
-    <section>
-      <p>본문</p>
-      <br /><br />
-
-      <div>
-        댓글 입력부
-
-        <form>
-          <label>댓글</label>
-          <textarea placeholder="댓글 쓰기"></textarea>
-          <button type="submit">쓰기</button>
-        </form>
-
-        댓글 나오는 부분
-        <ul>
-          <li>
-            <strong>goodjob</strong>
-            <time><small>2023-01-04</small></time>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. <br/>
-              Porro veritatis nulla ipsa architecto temporibus quasi doloremque iure.
-            </p>
-          </li>
-          <li>
-            <strong>goodjob0412</strong>
-            <time><small>2023-01-03</small></time>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            </p>
-          </li>
-
+            <li class="page-item">
+                <a class="page-link no-border" href="#">
+                    <span class="sr-only">Next</span>
+                    <span aria-hidden="true">»</span>
+                </a>
+            </li>
         </ul>
-      </div>
-    </section>
-
-
-    &lt;!&ndash; 페이지네이션 &ndash;&gt;
-    <nav>
-      <a href="#">이전</a>
-      <a href="#">다음</a>
-    </nav>-->
-
+    </nav>
 </main>
 
 
-<footer id="footer"></footer>
+<footer id="footer">
+    <hr>
+    footer 삽입부
+</footer>
 
 </body>
 </html>

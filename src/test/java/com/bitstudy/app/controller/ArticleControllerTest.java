@@ -49,7 +49,7 @@ class ArticleControllerTest {
 	 *   ArticleController 에 있는 private final ArticleService articleService; 부분의 articleService 을 배제하기 위해서
 	 *   @MockBean 을 사용한다. 이유는 MockMvc 가 입출력 관련된 것들만 보게 하기 위해서 서비스 로직을 끊어주기 위해서 사용. (속도) */
 
-	public ArticleControllerTest(@Autowired MockMvc mvc) {this.mvc = mvc;}
+		public ArticleControllerTest(@Autowired MockMvc mvc) {this.mvc = mvc;}
 
 
 	//	1) 게시판 리스트 페이지
@@ -80,36 +80,44 @@ class ArticleControllerTest {
 	public void articlesOne() throws Exception {
 
 		Long articleId = 1L;
+
+		long totalCount = 1L;
+
 		given(articleService.getArticle(articleId)).willReturn(createArticleWithCommentsDto());
+
+		given(articleService.getArticleCount()).willReturn(totalCount);
 
 		mvc.perform(get("/articles/1"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
 				.andExpect(view().name("articles/detail"))
 				.andExpect(model().attributeExists("article"))
-				.andExpect(model().attributeExists("articleComments")); // 상세 페이지에는 댓글들도 같이 오니까 확인.
+				.andExpect(model().attributeExists("articleComments")) // 상세 페이지에는 댓글들도 같이 오니까 확인.
+				.andExpect(model().attributeExists("totalCount"));
+
 
 		then(articleService).should().getArticle(articleId);
+		then(articleService).should().getArticleCount();
 	}
 
-	//	3) 게시판 검색 전용 페이지
-	@Disabled("구현중")
-	@Test
-	@DisplayName("[view][GET] 게시글 검색 전용 페이지 - 정상호출")
-	public void articlesSearch() throws Exception {
-		mvc.perform(get("/articles/search")).andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)).andExpect(view().name("articles/search"));
-	}
-
-	//	4) 해시태그  검색 전용 페이지
-	@Disabled("구현중")
-	@Test
-	@DisplayName("[view][GET] 게시글 해시태그 검색 전용 페이지 - 정상호출")
-	public void articlesSearchHashtag() throws Exception {
-		mvc.perform(get("/articles/search-hashtag"))
-				.andExpect(status().isOk())
-				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-				.andExpect(view().name("articles/search-hashtag"));
-	}
+//	//	3) 게시판 검색 전용 페이지
+//	@Disabled("구현중")
+//	@Test
+//	@DisplayName("[view][GET] 게시글 검색 전용 페이지 - 정상호출")
+//	public void articlesSearch() throws Exception {
+//		mvc.perform(get("/articles/search")).andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)).andExpect(view().name("articles/search"));
+//	}
+//
+//	//	4) 해시태그  검색 전용 페이지
+//	@Disabled("구현중")
+//	@Test
+//	@DisplayName("[view][GET] 게시글 해시태그 검색 전용 페이지 - 정상호출")
+//	public void articlesSearchHashtag() throws Exception {
+//		mvc.perform(get("/articles/search-hashtag"))
+//				.andExpect(status().isOk())
+//				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+//				.andExpect(view().name("articles/search-hashtag"));
+//	}
 
 
 

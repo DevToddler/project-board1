@@ -2,33 +2,68 @@
 <thlogic>
     <attr sel="#header" th:replace="header :: #header" />
     <attr sel="#footer" th:replace="footer :: #footer" />
-
+    `
     <attr sel="#article-main" th:object="${article}">
-        <!--글제목-->
-        <!--줄여서 쓰는 법
-            ${article.title} => *{title} 로 쓸 수 있다.-->
-        <attr sel="#article-header/h2" th:text="*{title}"/>
-        <!--aside-->
-        <attr sel="#nickname" th:text="*{nickname}"/>
-        <attr sel="#email" th:text="*{email}"/>
-        <attr sel="#created-date" th:text="*{#temporals.format(createdDate, 'yyyy-MM-dd HH:mm:ss')}" th:datetime="*{createdDate}"/>
-        <attr sel="#hashtag" th:text="*{hashtag}"/>
-        <!--본문 글-->
-        <attr sel="#content_body/p" th:text="*{title}"/>
+        <!-- 글제목-->
+        <attr sel="#article-header/h2" th:text="*{id} + ', ' + *{title}" />
 
-        <!--댓글-->
-        <attr sel="#comment-ul" th:remove="all-but-first" >
-            <attr sel="li[0]" th:each="articleComment:${articleComments}" th:object="${articleComment}">
-                <attr sel="#comment-nickname" th:text="*{nickname}" />
-                <attr sel="#comment-createdDate" th:datetime="*{createdDate}" th:text="*{#temporals.format(createdDate, 'yyyy-MM-dd HH:mm:ss')}" />
-                <attr sel="#comment-content" th:text="*{content}" />
+        <!--  ${article.title} 인데 *{} 를 이용해서 줄여서 쓸 수 있다.
+            ${article.title} => *{title} 로 대체 가능
+          -->
+        <!-- aside-->
+        <attr sel="#nickname" th:text="*{nickname}" />
+        <attr sel="#email" th:text="*{email}" />
+        <attr sel="#created-at" th:datetime="*{createdDate}" th:text="*{#temporals.format(createdDate, 'yyyy-MM-dd HH:mm:ss')}" />
+        <attr sel="#hashtag" th:text="*{hashtag}" />
+
+        <!-- 본문 글-->
+        <attr sel="#content-body" th:text="*{content}" />
+        <!-- <attr sel="#article-header/h2" th:text="${article.title}" />
+         <attr sel="#nickname" th:text="${article.nickname}" />
+         <attr sel="#email" th:text="${article.email}" />
+         <attr sel="#created-at" th:datetime="${article.createdAt}" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm:ss')}" />
+         <attr sel="#hashtag" th:text="${article.hashtag}" />
+         <attr sel="#content-body" th:text="${article.content}" />-->
+
+        <!-- 댓글 -->
+        <attr sel="#article-comments" th:remove="all-but-first">
+            <attr sel="li[0]" th:each="articleComment : ${articleComments}">
+                <attr sel="strong" th:text="${articleComment.nickname}" />
+                <attr sel="time" th:text="${#temporals.format(articleComment.createdDate, 'yyyy-MM-dd HH:mm:ss')}" />
+                <attr sel="p" th:text="${articleComment.content}" />
             </attr>
         </attr>
+
+
+        <!--        페이징 -->
+        <attr sel="#pagination">
+            <attr sel="ul">
+                <attr sel="li[0]/a"
+                      th:href="@{${article.id} - 1 <= 0 ? '#': |/articles/*{id - 1}|}"
+                      th:class="'page-link' + (*{id} - 1 <= 0 ? ' disabled': '')"
+
+                />
+                <attr sel="li[1]/a"
+                      th:href="@{*{id} >= ${totalCount} ? '#': |/articles/*{id + 1}|}"
+                      th:class="'page-link' + (*{id}  >= ${totalCount} ? ' disabled': '')"
+                />
+            </attr>
+        </attr>
+
     </attr>
-
-
 
 
 </thlogic>
 
-<!-- 디커플드 로직이 제대로 연결이 됐으면 'ctrl + 파일명' 부분 클릭하면해당 파일이 열린다.-->
+
+
+
+
+
+
+
+
+
+
+
+
