@@ -2,6 +2,33 @@
 <thlogic>
     <attr sel="#header" th:replace="header :: #header" />
     <attr sel="#footer" th:replace="footer :: #footer" />
+
+    <attr sel="#article-main" th:object="${article}">
+        <!--글제목-->
+        <!--줄여서 쓰는 법
+            ${article.title} => *{title} 로 쓸 수 있다.-->
+        <attr sel="#article-header/h2" th:text="*{title}"/>
+        <!--aside-->
+        <attr sel="#nickname" th:text="*{nickname}"/>
+        <attr sel="#email" th:text="*{email}"/>
+        <attr sel="#created-date" th:text="*{#temporals.format(createdDate, 'yyyy-MM-dd HH:mm:ss')}" th:datetime="*{createdDate}"/>
+        <attr sel="#hashtag" th:text="*{hashtag}"/>
+        <!--본문 글-->
+        <attr sel="#content_body/p" th:text="*{title}"/>
+
+        <!--댓글-->
+        <attr sel="#comment-ul" th:remove="all-but-first" >
+            <attr sel="li[0]" th:each="articleComment:${articleComments}" th:object="${articleComment}">
+                <attr sel="#comment-nickname" th:text="*{nickname}" />
+                <attr sel="#comment-createdDate" th:datetime="*{createdDate}" th:text="*{#temporals.format(createdDate, 'yyyy-MM-dd HH:mm:ss')}" />
+                <attr sel="#comment-content" th:text="*{content}" />
+            </attr>
+        </attr>
+    </attr>
+
+
+
+
 </thlogic>
 
 <!-- 디커플드 로직이 제대로 연결이 됐으면 'ctrl + 파일명' 부분 클릭하면해당 파일이 열린다.-->
