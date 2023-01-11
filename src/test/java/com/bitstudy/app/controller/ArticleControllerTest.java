@@ -4,6 +4,7 @@ import com.bitstudy.app.config.SecurityConfig;
 import com.bitstudy.app.dto.ArticleWithCommentsDto;
 import com.bitstudy.app.dto.UserAccountDto;
 import com.bitstudy.app.service.ArticleService;
+import com.bitstudy.app.service.PaginationService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,10 +18,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -42,6 +43,8 @@ class ArticleControllerTest {
 
 	@MockBean
 	private ArticleService articleService;
+	@MockBean
+	private PaginationService paginationService;
 	/** @MockBean : 테스트 시 테스트에 필요한 객체를 bean으로 등록시켜서 기존 객체 대신 사용할 수 있게 만들어 준다.
 	 *   ArticleController 에 있는 private final ArticleService articleService; 부분의 articleService 을 배제하기 위해서
 	 *   @MockBean 을 사용한다. 이유는 MockMvc 가 입출력 관련된 것들만 보게 하기 위해서 서비스 로직을 끊어주기 위해서 사용. (속도) */
@@ -55,12 +58,20 @@ class ArticleControllerTest {
 	public void articleAll() throws Exception {
 		/** searchKeyword 없을 때 검색어 없이 들어갈 거라서 */
 		given(articleService.searchArticles(eq(null), eq(null), any(Pageable.class))).willReturn(Page.empty());
+
+		/** 페이지네이션 파트 추가 */
+		given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0,1,2,3,4));
+
 		mvc.perform(get("/articles"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
 				.andExpect(view().name("articles/index"))
-				.andExpect(model().attributeExists("articles"));
+				.andExpect(model().attributeExists("articles"))
+				.andExpect(model().attributeExists("paginationBarNumbers"));
+
+
 		then(articleService).should().searchArticles(eq(null), eq(null), any(Pageable.class));
+		then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
 	}
 
 	//	2) 게시글 상세 페이지

@@ -5,8 +5,10 @@ import com.bitstudy.app.domain.type.SearchType;
 import com.bitstudy.app.dto.response.ArticleResponse;
 import com.bitstudy.app.dto.response.ArticleWithCommentsResponse;
 import com.bitstudy.app.service.ArticleService;
+import com.bitstudy.app.service.PaginationService;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.TypeCache;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -39,7 +41,9 @@ public class ArticleController {
 	private final ArticleService articleService;
 	/** @RequiredArgsConstructor 로 만들어진 생성자를 읽어서 정보의 전달을 할 수 있게 한다. */
 
-	/** 게시판 목록 페이지*/
+	private final PaginationService paginationService;
+
+	/** 게시판 리스트 페이지*/
 	@GetMapping
 	public String articles(
 			@RequestParam(required = false) SearchType searchType,
@@ -54,9 +58,16 @@ public class ArticleController {
 
 
 		// map.addAttribute("articles", List.of()); // 키 : articles, 값: 그냥 list
-		map.addAttribute("articles", articleService.searchArticles(searchType, searchValue, pageable).map(ArticleResponse::from));
+//		map.addAttribute("articles", articleService.searchArticles(searchType, searchValue, pageable).map(ArticleResponse::from));
 		// 진짜로 정보를 넣어줘야 하니까 ArticleService.java 에 만들어놓은 searchArticles() 메서드에 값을 넣어주면 된다.
 		// 그런데 searchArticles()의 반환 타입은 Dto 인데 Dto는 모든 엔티티의 데이터를 다 다루고 있어서 그걸 한번 더 가공해서 필요한 것들만 가지고 있는 ArticleResponse를 사용한다.
+
+		/** 새거 */
+		Page<ArticleResponse> articles = articleService.searchArticles(searchType, searchValue, pageable).map(ArticleResponse::from);
+		List<Integer> barNumber = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), articles.getTotalPages());
+
+		map.addAttribute("articles", articles);
+		map.addAttribute("paginationBarNumbers", barNumber);
 
 		return "articles/index";
 	}

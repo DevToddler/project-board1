@@ -3,7 +3,7 @@
     <attr sel="#header" th:replace="header :: #header" />
     <attr sel="#footer" th:replace="footer :: #footer" />
 
-<!-- 데이터 매핑   -->
+    <!-- 데이터 매핑 -->
     <attr sel="#article-table">
         <attr sel="tbody" th:remove="all-but-first">
         <!-- tbody 안에 있는 tr 들을 첫번째요소(tr) 빼고 다 지우기
@@ -12,10 +12,17 @@
                 <attr sel="td.title/a" th:text="${article.title}" th:href="@{'/articles/'+${article.id}}"/>
                 <attr sel="td.hashtag/a" th:text="${article.hashtag}" th:href="@{'/articles/'+${article.id}}"/>
                 <attr sel="td.user-id/a" th:text="${article.nickname}" th:href="@{'/articles/'+${article.id}}"/>
-                <attr sel="td.created-date/a" th:datetime="${article.createdDate}" th:text="${#temporals.format(article.createdDate, 'yyyy-MM-dd')}"/>
+                <attr sel="td.created-date/time" th:datetime="${article.createdDate}" th:text="${#temporals.format(article.createdDate, 'yyyy-MM-dd')}"/>
                 <!-- temporals-->
             </attr>
         </attr>
+    </attr>
+    <!--페이징-->
+    <attr sel="#pagination">
+        <attr sel="li[0]/a" th:text="이전" th:href="@{/articles(page=${articles.number - 1})}" th:class="'page-link'+(${articles.number<=0}?' disabled':'')"/>
+        <attr sel="li[1]" th:class="page-item" th:each="pageNumber : ${paginationBarNumbers}">
+            <attr sel="a" th:text="${pageNumber + 1}" th:href="@{/articles(page=${pageNumber})}" th:class="'page-link' + (${pageNumber} == ${articles.number}?' disabled':'')" />
+        <attr sel="li[2]/a" th:text="다음" th:href="@{/articles(page=${articles.number + 1})}" th:class="'page-link'+(${articles.number} >= ${articles.totalPages - 1}?' disabled':'')"/>
     </attr>
 </thlogic>
 
