@@ -96,6 +96,8 @@ class ArticleServiceTest {
 		Long articleId = 1L;
 		given(articleRepository.findById(articleId)).willReturn(Optional.of(article));
 
+		given(article);
+
 		// When -
 		ArticleWithCommentsDto dto = sut.getArticle(articleId);
 
@@ -160,6 +162,21 @@ class ArticleServiceTest {
 		// Then
 		then(articleRepository).should().deleteById(articleId);
 
+	}
+
+	@DisplayName("게시글 수 조회하면, 게시글 수 반환")
+	@Test
+	void givenNothing_thenReturnArticleCount(){
+		// Given
+		long expected = 0L;
+		given(articleRepository.count()).willReturn(expected);
+
+		// When
+		long actual = sut.getArticleCount();
+
+		// Then
+		assertThat(actual).isEqualTo(expected);
+		then(articleRepository).should().count();
 	}
 
 

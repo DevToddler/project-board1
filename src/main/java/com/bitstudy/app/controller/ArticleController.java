@@ -64,10 +64,10 @@ public class ArticleController {
 
 		/** 새거 */
 		Page<ArticleResponse> articles = articleService.searchArticles(searchType, searchValue, pageable).map(ArticleResponse::from);
-		List<Integer> barNumber = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), articles.getTotalPages());
+		List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), articles.getTotalPages());
 
 		map.addAttribute("articles", articles);
-		map.addAttribute("paginationBarNumbers", barNumber);
+		map.addAttribute("paginationBarNumbers", barNumbers);
 
 		return "articles/index";
 	}
@@ -79,6 +79,8 @@ public class ArticleController {
 		map.addAttribute("article", article);
 		map.addAttribute("articleComments", article.articleCommentsResponse());
 		// article.articleCommentsResponse() 해설: 현재 article에 ArticleCommentsResponse 의 정보가 담겨있으니까 article 안에 있는 articleComments를 꺼내면 된다.
+
+		map.addAttribute("totalCount", articleService.getArticleCount());
 		return "articles/detail";
 	}
 	

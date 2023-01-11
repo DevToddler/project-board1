@@ -101,4 +101,9 @@ public class ArticleService {
 	public void deleteArticle(long articleId) {
 		articleRepository.deleteById(articleId);
 	}
+
+	// 게시글 개수 구하기 - 마지막 글일때는 '다음' 버튼 비활성화 시켜야 하기 때문.
+	public long getArticleCount(){
+		return articleRepository.count();
+	}
 }
