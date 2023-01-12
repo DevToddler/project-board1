@@ -1,7 +1,5 @@
-<!-- 타임리프의 deCoupled 로직 적용해보기.
- 여기 파일을 다 HTML 로만 구성
-    th:replace 들을 다 삭제
-    -->
+<!-- 할일: 게시판 정렬
+각 컬럼 타이클 클릭시 내림,올림 차순으로 변경-->
 
 <!DOCTYPE html>
 <html>
@@ -16,6 +14,9 @@
 
     <!-- 본문 >> 검색 관련-->
     <link rel="stylesheet" href="/css/search_bar.css">
+
+    <!-- 본문 메인-->
+    <link rel="stylesheet" href="/css/index.css">
 
 </head>
 <body>
@@ -39,10 +40,10 @@
 
 <header id="header">
     header 삽입부
-    <hr>
+    <hr />
 </header>
 
-<main  class="container">
+<main class="container">
     <!-- 검색 -->
     <div class="row">
         <div class="col-lg-12 card-margin">
@@ -80,26 +81,32 @@
 
     <table class="table" id="article-table">
         <thead>
-            <tr>
-                <th>제목</th>
-                <th>해시태그</th>
-                <th>작성자</th>
-                <th>작성일</th>
-            </tr>
+        <tr>
+            <th class="title"><a>제목</a></th>
+            <th class="hashtag"><a>해시태그</a></th>
+            <th class="user-id"><a>작성자</a></th>
+            <th class="created-at"><a>작성일</a></th>
+        </tr>
         </thead>
         <tbody>
-            <tr>
-                <td class="title"><a>1번글</a></td>
-                <td class="hashtag"><a>#java</a></td>
-                <td class="user-id"><a>bitstudy</a></td>
-                <td class="created-date"><time>2023-01-04</time></td>
-            </tr>
-            <tr>
-                <td class="title"><a>2번글</a></td>
-                <td class="hashtag"><a>#java2</a></td>
-                <td class="user-id"><a>bitstudy2</a></td>
-                <td class="created-date"><time>2023-01-04</time></td>
-            </tr>
+        <tr>
+            <td class="title"><a>1번글</a></td>
+            <td class="hashtag"><a>#java</a></td>
+            <td class="user-id"><a>bitstudy</a></td>
+            <td class="created-at"><time>2023-01-04</time></td>
+        </tr>
+        <tr>
+            <td>2번글</td>
+            <td>#spring</td>
+            <td>bitstudy</td>
+            <td>2023-01-03</td>
+        </tr>
+        <tr>
+            <td>3번글</td>
+            <td>#mysql</td>
+            <td>bitstudy</td>
+            <td>2023-01-01</td>
+        </tr>
         </tbody>
     </table>
 
@@ -113,13 +120,19 @@
                 </a>
             </li>
 
-            <li class="page-item active"><a class="page-link no-border" href="#">1</a></li>
+
+            <li class="page-item active">
+                <a class="page-link no-border" href="#">1</a>
+            </li>
+            <!--<li class="page-item"><a class="page-link no-border" href="#">2</a></li>
+            <li class="page-item"><a class="page-link no-border" href="#">3</a></li>
+            <li class="page-item"><a class="page-link no-border" href="#">4</a></li>-->
 
 
             <li class="page-item">
                 <a class="page-link no-border" href="#">
-                    <span aria-hidden="true">»</span>
                     <span class="sr-only">Next</span>
+                    <span aria-hidden="true">»</span>
                 </a>
             </li>
         </ul>
@@ -135,3 +148,32 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
