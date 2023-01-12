@@ -49,21 +49,28 @@
         <div class="col-lg-12 card-margin">
             <div class="card search-form">
                 <div class="card-body p-0">
-                    <form id="search-form">
+<!-- 변경
+    1) form 에 action, method 넣기
+    2) select 에 정보 넘길 거니까 id 설정 및 name 속성 넣기
+            th.xml 에서 option 들 decoupled 로직으로 정보 SearchTypes 가져와서 넣을거니까 id 추가
+-->
+
+
+                    <form id="search-form" action="/articles" method="get">
                         <div class="row">
                             <div class="col-12">
                                 <div class="row no-gutters">
                                     <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                        <select class="form-control" id="exampleFormControlSelect1">
-                                            <option>제목</option>
-                                            <option>본문</option>
-                                            <option>ID</option>
-                                            <option>닉네임</option>
-                                            <option>해시태그</option>
+                                        <select class="form-control" id="search-type" name="searchType">
+                                            <option>test1</option>
+                                            <option>test2</option>
+                                            <option>test3</option>
+                                            <option>test4</option>
+                                            <option>test5</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-8 col-md-6 col-sm-12 p-0">
-                                        <input type="text" placeholder="Search..." class="form-control" id="search" name="search">
+                                        <input type="text" placeholder="Search..." class="form-control" id="search-value" name="searchValue">
                                     </div>
                                     <div class="col-lg-1 col-md-3 col-sm-12 p-0">
                                         <button type="submit" class="btn btn-base">
@@ -74,6 +81,8 @@
                             </div>
                         </div>
                     </form>
+
+
                 </div>
             </div>
         </div>
