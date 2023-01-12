@@ -1,6 +1,7 @@
 package com.bitstudy.app.controller;
 
 import com.bitstudy.app.config.SecurityConfig;
+import com.bitstudy.app.domain.type.SearchType;
 import com.bitstudy.app.dto.ArticleWithCommentsDto;
 import com.bitstudy.app.dto.UserAccountDto;
 import com.bitstudy.app.service.ArticleService;
@@ -74,6 +75,34 @@ class ArticleControllerTest {
 		then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
 	}
 
+	@Test
+	@DisplayName("[view][GET] 게시판 리스트 페이지 - 검색어와 함께 호출")
+	public void givenSearchKeyword_thenReturnArticles() throws Exception{
+		// Given
+		SearchType searchType = SearchType.TITLE;
+		String searchValue = "title";
+
+		given(articleService.searchArticles(eq(searchType), eq(searchValue), any(Pageable.class))).willReturn(Page.empty());
+		given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0, 1, 2, 3, 4));
+
+		// When
+		mvc.perform(
+				get("/articles")
+						.queryParam("searchType", searchType.name())
+						.queryParam("searchValue", searchValue)
+				)
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+				.andExpect(view().name("articles/index"))
+				.andExpect(model().attributeExists("articles"))
+				.andExpect(model().attributeExists("searchTypes"));
+
+		// Then
+		then(articleService).should().searchArticles(eq(searchType), eq(searchValue), any(Pageable.class));
+		then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
+
+	}
+
 	//	2) 게시글 상세 페이지
 	@Test
 	@DisplayName("[view][GET] 게시글 상세페이지 - 정상호출")
@@ -99,6 +128,8 @@ class ArticleControllerTest {
 		then(articleService).should().getArticle(articleId);
 		then(articleService).should().getArticleCount();
 	}
+
+
 
 //	//	3) 게시판 검색 전용 페이지
 //	@Disabled("구현중")

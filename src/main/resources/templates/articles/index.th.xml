@@ -5,12 +5,28 @@
 
 
     <attr sel="main" th:object="${articles}" >
+        <!-- 검색 부분 -->
+        <attr sel="#search-type" th:remove="all-but-first">
+            <attr sel="option[0]"
+                  th:each="searchType : ${searchTypes}"
+                  th:value="${searchType.name}"
+                  th:selected="${param.searchType != null && (param.searchType.toString == searchType.name)}"
+                  th:text="${searchType.description}"
+            />
+        </attr>
+        <attr sel="#search-value" th:value="${param.searchValue}"/>
+
         <!-- 데이터 맵핑 -->
         <attr sel="#article-table">
 
             <attr sel="thead/tr">
-                <attr sel="th.title/a" th:text="'제목'" th:href="@{/articles(page=${articles.number}, sort='title'
-                     + (*{sort.getOrderFor('title')} != null ? (*{sort.getOrderFor('title').direction.name} != 'DESC' ? ',desc' : '') : '')
+                <attr sel="th.title/a"
+                      th:text="'제목'"
+                      th:href="@{/articles(
+                            page=${articles.number},
+                            sort='title' + (*{sort.getOrderFor('title')} != null ? (*{sort.getOrderFor('title').direction.name} != 'DESC' ? ',desc' : '') : ''),
+                            searchType=${param.searchType},
+                            searchValue=${param.searchValue}
                 )}" />
                 <!-- 해설:
                  1) page=${articles.number}, number 는 ArticleController.java 에서
@@ -23,16 +39,22 @@
                     *{sort.getOrderFor('title').direction.name =>
                  -->
                 <attr sel="th.hashtag/a" th:text="'해시태그'" th:href="@{/articles(page=${articles.number}, sort='hashtag'
-                     + (*{sort.getOrderFor('hashtag')} != null ? (*{sort.getOrderFor('hashtag').direction.name} != 'DESC' ? ',desc' : '') : '')
+                     + (*{sort.getOrderFor('hashtag')} != null ? (*{sort.getOrderFor('hashtag').direction.name} != 'DESC' ? ',desc' : '') : ''),
+                            searchType=${param.searchType},
+                            searchValue=${param.searchValue}
                 )}" />
                 <attr sel="th.user-id/a" th:text="'작성자'" th:href="@{/articles(page=${articles.number}, sort='userAccount.userId'
-                     + (*{sort.getOrderFor('userAccount.userId')} != null ? (*{sort.getOrderFor('userAccount.userId').direction.name} != 'DESC' ? ',desc' : '') : '')
+                     + (*{sort.getOrderFor('userAccount.userId')} != null ? (*{sort.getOrderFor('userAccount.userId').direction.name} != 'DESC' ? ',desc' : '') : ''),
+                            searchType=${param.searchType},
+                            searchValue=${param.searchValue}
                 )}" />
                 <!-- 해설: sort='userAccount.userId'
                             userId 또는 nickname 은 UserAccount 에서 가져오는거기 때문에 UserAccount.userId 라고 써야함
                 -->
                 <attr sel="th.created-at/a" th:text="'작성일'" th:href="@{/articles(page=${articles.number}, sort='createdDate'
-                     + (*{sort.getOrderFor('createdDate')} != null ? (*{sort.getOrderFor('createdDate').direction.name} != 'DESC' ? ',desc' : '') : '')
+                     + (*{sort.getOrderFor('createdDate')} != null ? (*{sort.getOrderFor('createdDate').direction.name} != 'DESC' ? ',desc' : '') : ''),
+                            searchType=${param.searchType},
+                            searchValue=${param.searchValue}
                 )}" />
             </attr>
 
@@ -66,7 +88,10 @@
         <attr sel="#pagination">
             <attr sel="li[0]/a"
                   th:text="이전"
-                  th:href="@{/articles(page=${articles.number - 1})}"
+                  th:href="@{/articles(page=${articles.number - 1},
+                            sort=${param.sort},
+                            searchType=${param.searchType},
+                            searchValue=${param.searchValue})}"
                   th:class="'page-link' + (${articles.number<=0}?' disabled':'')"
             />
             <!--해설
@@ -78,14 +103,20 @@
                 articles.number(현재 페이지)가 0 이면 '이전' 버튼이 비활성화 되게 함
             -->
             <attr sel="li[1]" th:class="page-item" th:each="pageNumber : ${paginationBarNumbers}">
-                <attr sel="a" th:text="${pageNumber + 1}" th:href="@{/articles(page=${pageNumber})}" th:class="'page-link' + (${pageNumber} == ${articles.number}?' disabled':'')" />
+                <attr sel="a" th:text="${pageNumber + 1}" th:href="@{/articles(page=${pageNumber},
+                            sort=${param.sort},
+                            searchType=${param.searchType},
+                            searchValue=${param.searchValue})}" th:class="'page-link' + (${pageNumber} == ${articles.number}?' disabled':'')" />
                 <!--  /articles?page=?? -->
             </attr>
 
 
             <attr sel="li[2]/a"
                   th:text="다음"
-                  th:href="@{/articles(page=${articles.number + 1})}"
+                  th:href="@{/articles(page=${articles.number + 1},
+                            sort=${param.sort},
+                            searchType=${param.searchType},
+                            searchValue=${param.searchValue})}"
                   th:class="'page-link' + (${articles.number} >= ${articles.totalPages - 1}?' disabled':'')"
             />
         </attr>
