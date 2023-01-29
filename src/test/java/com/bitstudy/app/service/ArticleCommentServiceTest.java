@@ -7,6 +7,7 @@ import com.bitstudy.app.dto.ArticleCommentDto;
 import com.bitstudy.app.dto.UserAccountDto;
 import com.bitstudy.app.repository.ArticleCommentRepository;
 import com.bitstudy.app.repository.ArticleRepository;
+import com.bitstudy.app.repository.UserAccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,164 +18,169 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-/**
- * 할일 : 댓글의 CRUD 관련된 테스트만 만들기
- */
+/* 할일: 수정, 삭제 부분에 사용자 정보 추가하기 */
+/*  service > ArticleCommentService.java 랑 같이 볼것 */
 
 @ExtendWith(MockitoExtension.class)
 class ArticleCommentServiceTest {
-	/** @InjectMocks, @Mock  설명
-	 	Mock 달린 걸 InjectMocks에 넣어서 테스트 환경을 가짜로(db가 너무 무거울 경우, 데이터 바뀔 위험 등등) 만드는 개념
-	 	아래 실제 Service 처럼 테스트 환경을 만들어 주는 개념.
-			 @RequiredArgsConstructor
-			 public class ArticleCommentService {
-			 	private final ArticleRepository articleRepository;
-			 	private final ArticleCommentRepository articleCommentRepository;
-			 }
-	 */
-	@InjectMocks
-	private ArticleCommentService sut;
 
-	@Mock
-	private ArticleRepository articleRepository;
-	@Mock
-	private ArticleCommentRepository articleCommentRepository;
+    @InjectMocks private ArticleCommentService sut;
 
-	// 댓글 리스트 조회
-	@DisplayName("게시글 ID로 조회하면, 해당하는 댓글 리스트 모두 반환")
-	@Test
-	void givenSearchById_thenReturnCommentsAll(){
-		// Given
-		Long articleId = 1L;
-		ArticleComment expected = createArticleComment("content");
-		given(articleCommentRepository.findByArticle_Id(articleId)).willReturn(List.of(expected));
+    @Mock private ArticleRepository articleRepository;
+    @Mock private ArticleCommentRepository articleCommentRepository;
 
-		// When
-		List<ArticleCommentDto> actual = sut.searchArticleComment(articleId);
-
-		// Then
-		assertThat(actual).hasSize(1).first().hasFieldOrPropertyWithValue("content", expected.getContent());
-
-		then(articleCommentRepository).should().findByArticle_Id(articleId);
-	}
-
-	// 댓글 저장
-	@DisplayName("댓글 정보를 입력하면, 댓글 저장")
-	@Test
-	void givenCommentInfo_thenSaveComment(){
-		// Given
-		ArticleCommentDto dto = createArticleCommentDto("content");
-
-		given(articleRepository.getReferenceById(dto.articleId())).willReturn(createArticle());
-		given(articleCommentRepository.save(any(ArticleComment.class))).willReturn(null);
-
-		// When
-		sut.saveArticleComment(dto);
-
-		// Then
-		then(articleRepository).should().getReferenceById(dto.articleId());
-
-		then(articleCommentRepository).should().save(any(ArticleComment.class));
-	}
-
-	// 댓글 수정
-	@DisplayName("댓글 정보를 입력하면, 댓글 수정")
-	@Test
-	void givenCommentInfo_thenUpdateComment(){
-		// Given
-		String oldContent = "content";
-		String updateContent = "댓글";
-		ArticleComment articleComment = createArticleComment(oldContent);
-		ArticleCommentDto dto = createArticleCommentDto(updateContent);
-
-		given(articleCommentRepository.getReferenceById(dto.id())).willReturn(articleComment);
-
-		// When
-		sut.updateArticleComment(dto);
-
-		// Then
-		assertThat(articleComment.getContent()).isNotEqualTo(oldContent).isEqualTo(updateContent);
-		then(articleCommentRepository).should().getReferenceById(dto.id());
-	}
-
-	// 댓글 삭제
-	@DisplayName("댓글 id, 댓글 수정")
-	@Test
-	void givenCommentId_thenDeleteComment() {
-		// Given
-		Long articleCommentId = 1L;
-		willDoNothing().given(articleCommentRepository).deleteById(articleCommentId);
-
-		// When
-		sut.deleteArticleComment(articleCommentId);
-
-		// Then
-		then(articleCommentRepository).should().deleteById(articleCommentId);
-	}
+/*추가*/ @Mock private UserAccountRepository userAccountRepository;
 
 
-	/**********************************************************************/
-	private ArticleCommentDto createArticleCommentDto(String content) {
-		return ArticleCommentDto.of(
-				1L,
-				1L,
-				createUserAccountDto(),
-				content,
-				LocalDateTime.now(),
-				"bitstudy",
-				LocalDateTime.now(),
-				"bitstudy"
-		);
-	}
+    /* 댓글 리스트 조회 */
+    @DisplayName("게시글 ID 로 조회하면, 해당하는 댓글 리스트 모두 반환")
+    @Test
+    void givenSearchById_thenReturnCommentsAll() {
+        // Given
+        ArticleComment expected = createArticleComment("content");
+        /* 1L 번 게시글 기준으로 모든 댓글들 다 리턴해오기 */
+        Long articleId = 1L;
+        given(articleCommentRepository.findByArticle_Id(articleId)).willReturn(List.of((expected)));
 
-	private UserAccountDto createUserAccountDto(){
-		return UserAccountDto.of(
-				1L,
-				"bitstudy",
-				"asdf",
-				"bitstudy@email.com",
-				"nickname",
-				"memo",
-				LocalDateTime.now(),
-				"bitstudy",
-				LocalDateTime.now(),
-				"bitstudy"
-		);
-	}
+        // When
+        List<ArticleCommentDto> actual = sut.searchArticleComment(articleId);
 
-	private ArticleComment createArticleComment(String content) {
-		return ArticleComment.of(
-				Article.of(
-						createUserAccount(),
-						"title",
-						"content",
-						"hashtag"
-				),
-				createUserAccount(),
-				content
-		);
-	}
+        // Then
+        assertThat(actual)
+                .hasSize(1)
+                .first().hasFieldOrPropertyWithValue("content", expected.getContent());
+        then(articleCommentRepository).should().findByArticle_Id(articleId);
 
-	private UserAccount createUserAccount(){
-		return UserAccount.of(
-				"bitstudy",
-				"password",
-				"bitstudy@email.com",
-				"bitstudy",
-				null
-		);
-	}
+    }
 
-	private Article createArticle(){
-		return Article.of(
-				createUserAccount(),
-				"title",
-				"content",
-				"hashtag"
-		);
-	}
+    /* 댓글 저장 */
+    @DisplayName("댓글 내용를 입력하면, 댓글 저장")
+    @Test
+    void givenCommentInfo_thenSaveComment() {
+        // Given
+        ArticleCommentDto dto = createArticleCommentDto("댓글");
+        given(articleRepository.getReferenceById(dto.articleId())).willReturn(createArticle());
+        given(articleCommentRepository.save(any(ArticleComment.class))).willReturn(null);
+        
+        /* userAccountRepository 한테 요 위에서 생성한 dto 에서 만들었던 userAccountDto 의 userId 를 참조하게 하려면 아무렇게나 유저어카운트 만들어서 넘겨주면 된다. (실제 유저의 내용이 뭔지는 중요하지 않기 떄문임.) */
+        given(userAccountRepository.getReferenceById(dto.userAccountDto().userId())).willReturn(createUserAccount());
+
+        // When
+        sut.saveArticleComment(dto);
+
+        // Then
+        then(articleRepository).should().getReferenceById(dto.articleId());
+        then(articleCommentRepository).should().save(any(ArticleComment.class));
+
+/*추가*/ then(userAccountRepository).should().getReferenceById(dto.userAccountDto().userId());
+    }
+
+    /* 댓글 수정 */
+    @DisplayName("댓글 내용를 입력하면, 댓글 수정")
+    @Test
+    void givenCommentInfo_thenUpdateComment() {
+        // Given
+        String oldContent = "content";
+        String updateContent = "댓글";
+        ArticleComment articleComment = createArticleComment(oldContent); /** 새로운 테스트용 댓글 생성*/
+        ArticleCommentDto dto = createArticleCommentDto(updateContent);
+        given(articleCommentRepository.getReferenceById(dto.id())).willReturn(articleComment);
+
+        // When
+        sut.updateArticleComment(dto);
+
+        // Then
+        assertThat(articleComment.getContent()) /* 지금 바꿔치기 한 articleComment의 content가  */
+                .isNotEqualTo(oldContent) /* oldContent 랑 다르고*/
+                .isEqualTo(updateContent); /* updateContent 랑 같으면 테스트 통과 */
+
+        then(articleCommentRepository).should().getReferenceById(dto.articleId());
+    }
+
+    /* 댓글 삭제 */
+    @DisplayName("댓글 id 입력하면, 댓글 삭제")
+    @Test
+    void givenCommentId_thenDeleteComment() {
+        // Given
+        Long articleCommentId = 1L;
+/*추가*/ String userId = "bitstudy";
+/*삭제*/ //willDoNothing().given(articleCommentRepository).deleteById(articleCommentId);
+/*추가*/ willDoNothing().given(articleCommentRepository).deleteByIdAndUserAccount_UserId(articleCommentId, userId);
+/* 이거 추가 하고 ArticleCommentRepository.java 가서 deleteByIdAndUserAccount_UserId 이거 추가하기 */
+
+        // When
+/*삭제*/ //sut.deleteArticleComment(articleCommentId);
+/*추가*/ sut.deleteArticleComment(articleCommentId, userId);
+
+        // Then
+/*삭제*/ //then(articleCommentRepository).should().deleteById(articleCommentId);
+/*추가*/ then(articleCommentRepository).should().deleteByIdAndUserAccount_UserId(articleCommentId, userId);
+/* 이거 추가 하고 ArticleCommentRepository.java 가서 deleteByIdAndUserAccount_UserId 이거 추가하기 */
+
+        /* 다 하면 ArticleCommentService 가서 deleteArticleComment() 메서드 수정 */
+    }
+
+    //////////////////////////////////////////////
+
+    private ArticleCommentDto createArticleCommentDto(String content) {
+        return ArticleCommentDto.of(
+                1L,
+                1L,
+                createUserAccountDto(),
+                content,
+                LocalDateTime.now(),
+                "bitstudy",
+                LocalDateTime.now(),
+                "bitstudy"
+        );
+    }
+    private UserAccountDto createUserAccountDto() {
+        return UserAccountDto.of(
+//                1L,
+                "bitstudy",
+                "password",
+                "bitstudy@email.com",
+                "bitstudy",
+                "memo메모",
+                LocalDateTime.now(),
+                "bitstudy",
+                LocalDateTime.now(),
+                "bitstudy"
+        );
+    }
+
+    private ArticleComment createArticleComment(String content) {
+        return ArticleComment.of(
+                Article.of(
+                    createUserAccount(),
+                    "title",
+                    "content",
+                    "hashtag"
+                ),
+                createUserAccount(),
+                content
+        );
+    }
+    private UserAccount createUserAccount() {
+        return UserAccount.of(
+                "bitstudy",
+                "password",
+                "bitstudy@email.com",
+                "bitstudy",
+                null
+        );
+    }
+
+    private Article createArticle() {
+        return Article.of(
+                createUserAccount(),
+                "title",
+                "content",
+                "#java"
+        );
+    }
 }

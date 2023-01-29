@@ -3,7 +3,6 @@ package com.bitstudy.app.domain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -16,83 +15,80 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/** 할일: @JoinColumn 이용해서 FK 키 연결 및 생성자 변경. */
 
-
-
-//@EntityListeners(AuditingEntityListener.class)
-@Entity
-@Getter
-@ToString(callSuper = true) // UserAccount 에 있는 toString 까지 출력할 수 있도록.
 @Table(indexes = {
-		@Index(columnList = "title"),
-		@Index(columnList = "hashtag"),
-		@Index(columnList = "createdDate"),
-		@Index(columnList = "createdBy"),
+        @Index(columnList = "title"),  // 검색속도 빠르게 해주는 작업
+        @Index(columnList = "hashtag"),
+        @Index(columnList = "createdAt"),
+        @Index(columnList = "createdBy")
 })
-public class Article extends AuditingFields{
+@Entity // Lombok 을 이용해서 클래스를 엔티티로 변경 @Entity 가 붙은 클래스는 JPA 가 관리하게 된다.
+@Getter // 모든 필드의 getter 들이 생성
+@ToString(callSuper = true) // 모든 필드의 toString 생성
+                            // 상위(UserAccount)에 있는 toString 까지 출력할 수 있도록 callSuper 넣음
+public class Article extends AuditingFields {
 
-	@Id // 전체 필드 중에 이게 PK라고 알려주는 것.
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // 해당 필드를 auto_increment 로 설정해야할 경우. 기본키 전략
-	private Long id;
-
-	@Setter
-	@ManyToOne(optional = false)
-	private UserAccount userAccount;
-
-	@Setter
-	@Column(nullable = false)
-	private String title; // 제목
-
-	@Setter
-	@Column(nullable = false, length = 10000)
-	private String content; // 본문
-
-	@Setter
-	private String hashtag; // 해시태그
+    @Id // 전체 필드중에서 PK 표시 해주는 것 @Id 가 없으면 @Entity 어노테이션을 사용 못함
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 해당 필드가 auto_increment 인 경우 @GeneratedValue 를 써서 자동으로 값이 생성되게 해줘야 한다. (기본키 전략)
+    private long id; // 게시글 고유 아이디
 
 
-	@OrderBy("createdDate desc") // 댓글리스트를 최근시간 순으로 정렬되도록 함.
-	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
-	@ToString.Exclude
+/* 삭제 */
+/*  @Setter
+    @ManyToOne(optional = false) // 단방향
+    private UserAccount userAccount;*/
 
-	private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
+/* 새로 삽입 */
+    @Setter
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "userId")
+    private UserAccount userAccount; // 조인 컬럼은 외래 키를 매핑할 때 사용
 
 
 
-	/**************************************************************************/
+    @Setter
+    @Column(nullable = false)
+    private String title; // 제목
 
+    @Setter
+    @Column(nullable = false, length = 10000)
+    private String content; // 본문
 
-	/** Entity 만들 때는 무조건 기본 생성자가 필요하다.
-	 *  public 또는 protected 만 가능한데, 기본 생성자 안쓰이게 하고 싶어서 protected로 둠.
-	 * */
-	protected Article(){}
+    @Setter
+    private String hashtag; // 해시태그
 
-	/** 사용자가 입력하는 값만 받기. 나머지는 시스템이 알아서 하도록.
-	 * */
-	private Article(UserAccount userAccount, String title, String content, String hashtag) {
-		this.userAccount = userAccount;
-		this.title = title;
-		this.content = content;
-		this.hashtag = hashtag;
-	}
+//    @OrderBy("id")
+    @OrderBy("createdAt desc") // 댓글리스트를 최근시간꺼로 정렬되도록 바꿈
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
 
-	public static Article of(UserAccount userAccount, String title, String content, String hashtag){
-		return new Article(userAccount, title, content, hashtag);
-	}
+    protected Article() {}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		Article article = (Article) o;
-		return id.equals(article.id);
-	}
+/* 이제부터 게시글에 관련된 정보는 실제 유저의 정보를 같이 가져가야 하기 떄문에 생성자에서도 userAccount 를 쓴다.*/
+    private Article(/* 새로 추가 */UserAccount userAccount, String title, String content, String hashtag) {
+/* 새로 추가 */this.userAccount = userAccount;
+        this.title = title;
+        this.content = content;
+        this.hashtag = hashtag;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
+    public static Article of(/* 새로 추가 */UserAccount userAccount, String title, String content, String hashtag){
+        return new Article(/* 새로 추가 */userAccount, title,content,hashtag);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Article article = (Article) o;
+        return id == article.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
 }

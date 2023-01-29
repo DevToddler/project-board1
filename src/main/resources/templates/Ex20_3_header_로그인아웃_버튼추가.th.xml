@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<thlogic>
+    <attr sel="#home" th:href="@{/}" />
+    <attr sel="#hashtag" th:href="@{/articles/search-hashtag}" />
+    <attr sel="#username" sec:authorize="isAuthenticated()" sec:authentication="name" />
+    <attr sel="#login" sec:authorize="!isAuthenticated()" th:href="@{/login}" />
+    <attr sel="#logout" sec:authorize="isAuthenticated()" th:href="@{/logout}" />
+
+    <!-- sec 라는 시큐리티 태그임. 단지 여기서 못알아봐서 빨간색 뜨는거니까 신경쓰지 않아도 됨.
+        sec:authorize="isAuthenticated()  => 인증된 상태인지 확인하는 코드
+        sec:authentication="name"  => 인증된 결과에 따라서 유저네임을 보여준다.
+
+
+    여기까지 하고 실제 브라우저에서 돌리면
+      로그인할때 Whitelabel Error Page 에러뜬다.
+
+       에러메세지중에 4~5번쨰줄 보면 There is no PasswordEncoder mapped for the id "null"
+        이런 메세지가 있는데 이건 data.sql 에 있는 비번에 별도의 처리를 해줘야 하기 때문.
+        이유는 SecurityConfig 에서 PasswordEncoder() 를 만들었었는데, 그때 createDelegatingPasswordEncoder() 메서드를 썼었음.
+        그걸 쓰게 되면 data.sql에 비번 부분에 '{암호화방식}암호' 형식으로 넣어야 된다.
+                  ex) {noop}asdf
+
+                  noop: 일단 평문으로 보이게 하는 no operation 방식으로 할거다.
+
+         data.sql 가서 비번부분 바꾸자.
+
+
+         *참고: 이렇게 해서 로그인을 하면,  남이 쓴 글에도 수정,삭제 버튼들이 다 나온다. 단지 기능만 막혔을 뿐이다.
+              index.th.xml 부분 수정해야함.
+       -->
+</thlogic>

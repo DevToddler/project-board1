@@ -1,8 +1,18 @@
 <?xml version="1.0"?>
+<!-- 할일:  로그인한 유저가  글쓴이일때만 수정 삭제 버튼이 보이도록 한다.
+
+    #article-buttons (수정, 삭제 버튼) 부분 가보자.
+
+    다 하고 브라우저에서 실행하면 userId 때문에 에러난다.
+    이유는 ArticleCommentResponse 와 ArticleWithCommentResponse 에서 userId 정보를 못꺼내와서 그렇다.
+    가보자
+
+-->
+
 <thlogic>
     <attr sel="#header" th:replace="header :: #header" />
     <attr sel="#footer" th:replace="footer :: #footer" />
-    `
+`
     <attr sel="#article-main" th:object="${article}">
         <!-- 글제목-->
         <attr sel="#article-header/h2" th:text="*{id} + ', ' + *{title}" />
@@ -13,29 +23,65 @@
         <!-- aside-->
         <attr sel="#nickname" th:text="*{nickname}" />
         <attr sel="#email" th:text="*{email}" />
-        <attr sel="#created-at" th:datetime="*{createdDate}" th:text="*{#temporals.format(createdDate, 'yyyy-MM-dd HH:mm:ss')}" />
+        <attr sel="#created-at" th:datetime="*{createdAt}" th:text="*{#temporals.format(createdAt, 'yyyy-MM-dd HH:mm:ss')}" />
         <attr sel="#hashtag" th:text="*{hashtag}" />
 
         <!-- 본문 글-->
-        <attr sel="#content-body" th:text="*{content}" />
-        <!-- <attr sel="#article-header/h2" th:text="${article.title}" />
-         <attr sel="#nickname" th:text="${article.nickname}" />
-         <attr sel="#email" th:text="${article.email}" />
-         <attr sel="#created-at" th:datetime="${article.createdAt}" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm:ss')}" />
-         <attr sel="#hashtag" th:text="${article.hashtag}" />
-         <attr sel="#content-body" th:text="${article.content}" />-->
+        <attr sel="#content-body/p" th:text="*{content}" />
+
+
+<!--*************************************************-->
+        <!-- 수정, 삭제 버튼-->
+<!-- 추가 -  th:if 관련 속성 추가함 -->
+        <attr sel="#article-buttons" th:if="${#authorization.expression('isAuthenticated()')} and *{userId} == ${#authentication.name}">
+            <attr sel="#delete-article-form" th:action="'/articles/'+ *{id} +'/delete'" th:method="POST">
+                <attr sel="#update-article" th:href="'/articles/'+ *{id} +'/form'" />
+            </attr>
+        </attr>
+<!-- 여기까지 새로 추가한거. -->
+<!-- ******************************************************* -->
+
+
+        <!-- 댓글 쓰는 부분 form 에 action 달기
+            고정되는 주소라 html 파일에 직접 넣어도 됨.
+            근데 어떤건 html 에 있고, 어떤건 th.xml 에서 넣어주고 하면 나중에 유지보수 할때 파일 두개 다 확인해가면서 작업해야함. 아무튼 그거슨 선택!
+            -->
+        <attr sel="#comment-form" th:action="@{/comments/new}" th:method="post">
+            <attr sel="#comment-textbox" th:name="content" />
+        </attr>
+
+        <!-- 각 댓글들에 달릴 현재 게시글 id-->
+        <attr sel=".article-id" th:name="articleId" th:value="*{id}" />
+
+
 
         <!-- 댓글 -->
         <attr sel="#article-comments" th:remove="all-but-first">
             <attr sel="li[0]" th:each="articleComment : ${articleComments}">
-                <attr sel="strong" th:text="${articleComment.nickname}" />
-                <attr sel="time" th:text="${#temporals.format(articleComment.createdDate, 'yyyy-MM-dd HH:mm:ss')}" />
-                <attr sel="p" th:text="${articleComment.content}" />
+                <!-- form 에 삭제 버튼 관련 추가됨-->
+                <attr sel="form" th:action="'/comments/' + ${articleComment.id} + '/delete'" th:method="post">
+                    <attr sel="div/strong" th:text="${articleComment.nickname}" />
+                    <attr sel="div/small/time" th:datetime="${articleComment.createdAt}" th:text="${#temporals.format(articleComment.createdAt, 'yyyy-MM-dd HH:mm:ss')}" />s
+                    <attr sel="div/p" th:text="${articleComment.content}" />
+<!-- ******************************************************* -->
+<!-- 새로 생성 -->    <attr sel="button" th:if="${#authorization.expression('isAuthenticated()')} and ${articleComment.userId} == ${#authentication.name}" />
+            <!-- 해설:
+                th:if => 조건이 참인 경우에 화면이 나타난다.
+                ${#authorization.expression('isAuthenticated()')} : 유저가 인증 됐나
+                *{articleComment.userId} == ${#authentication.name} : 게시글의 userId 가 == 지금 인증받은 사용자의 name과 같은가.
+                                               한마디로 지금 로그인 한 사람이 글쓴이인가 묻는거임.
+
+
+            다 했으면 저장하고 리컴파일(ctrl + shift + F9) 하고, 브라우저 가서 확인하기
+        -->
+<!-- ******************************************************* -->
+                </attr>
             </attr>
         </attr>
 
 
-        <!--        페이징 -->
+
+        <!-- 페이징 -->
         <attr sel="#pagination">
             <attr sel="ul">
                 <attr sel="li[0]/a"
