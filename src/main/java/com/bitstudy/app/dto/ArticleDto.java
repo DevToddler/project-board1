@@ -1,72 +1,82 @@
 package com.bitstudy.app.dto;
 
-
 import com.bitstudy.app.domain.Article;
 import com.bitstudy.app.domain.UserAccount;
 
 import java.time.LocalDateTime;
 
-/** record 란
- *  자바 16버전에서 새로 나온 것.
- *  Dto와 비슷. Dto를 구현하려면 getter, setter, equals, hashcode, toString 같은 데이터 처리를 수행하기 위해 오버라이드 된 메서드를 반복해서 작성해야 한다.
- *  이런것들을 보일러 플레이트 코드(여러곳에서 재사용 되는 반복적으로 비슷한 형태를 가진 코드)라고 한다.
- *  롬복을 이용하긴 하지만 근본적인 한계는 해결 못한다.
- *  그래서 특정 데이터와 관련있는 필드들만 묶어놓은 자료구조로 record 라는 것이 생겼다.
- *
- *  *주의 : record는 entity로 쓸 수 없다. Dto로만 가능
- *  		이유는 쿼리 결과를 매핑할 때 객체를 인스턴스화 할 수 있도록 매개변수가 없는 생성자가 필요하지만,
- *  		record에서는 매개변수가 없는 생성자(기본생성자)를 제공하지 않는다. 또한 setter도 사용할 수 없다.(그래서 모든 필드의 값을 입력한 후에 생성할 수 있다.)
- *
- * */
-public record ArticleDto(
-		Long id,
-		UserAccountDto userAccountDto,
-		String title,
-		String content,
-		String hashtag,
-		LocalDateTime createdDate,
-		String createdBy,
-		LocalDateTime modifiedDate,
-		String modifiedBy) {
 
-	public static ArticleDto of(Long id,
-								UserAccountDto userAccountDto,
-								String title,
-								String content,
-								String hashtag,
-								LocalDateTime createdDate,
-								String createdBy,
-								LocalDateTime modifiedDate,
-								String modifiedBy){
-		return new ArticleDto(id, userAccountDto, title, content, hashtag, createdDate, createdBy, modifiedDate, modifiedBy);
-	}
 
-	/** entity를 매개변수로 입력하면 ArticleDto로 변환해주는 메서드.
-	 *
-	 * entity를 받아서 new 로 ArticleDto 인스턴스 생성
-	 *
-	 * */
-	public static ArticleDto from(Article entity){
-		return new ArticleDto(
-				entity.getId(),
-				UserAccountDto.from(entity.getUserAccount()),
-				entity.getTitle(),
-				entity.getContent(),
-				entity.getHashtag(),
-				entity.getCreatedDate(),
-				entity.getCreatedBy(),
-				entity.getModifiedDate(),
-				entity.getModifiedBy()
-		);
-	}
+public record ArticleDto( /* 우선 엔티티가 가지고 있는 모든 정보를 dto도 가지고 있게 해서 나중에 응답할때 어떤걸 보내줄지 선택해서 가공하게 할거임 */
+        Long id,
+        UserAccountDto userAccountDto, /** 회원정보는 꼭 가지고 있어서 억지로 땡겨와서 넣음 */
+        String title,
+        String content,
+        String hashtag,
+        LocalDateTime createdAt,
+        String createdBy,
+        LocalDateTime modifiedAt,
+        String modifiedBy
+        ) {
 
-	public Article toEntity(){
-		return Article.of(
-				userAccountDto.toEntity(),
-				title,
-				content,
-				hashtag
-		);
-	}
+/*추가*/
+    public static ArticleDto of(UserAccountDto userAccountDto, String title, String content, String hashtag) {
+        return new ArticleDto(null, userAccountDto, title, content, hashtag, null, null, null, null);
+    }
+    
+    
+    public static ArticleDto of(Long id, UserAccountDto userAccountDto, String title, String content, String hashtag, LocalDateTime createdAt, String createdBy, LocalDateTime modifiedAt, String modifiedBy) {
+        return new ArticleDto(id, userAccountDto, title, content, hashtag, createdAt, createdBy, modifiedAt, modifiedBy);
+    }
 
+    /* entity를 매개변수로 입력하면 ArticleDto로 변환해주는 메서드.
+    *
+    * entity를 받아서 new 한 다음에 인스턴스에다가 entity. 이라고 해가면서 맵핑시켜서 return 하고 있는거
+    * 맵퍼라고 부름.  */
+    public static ArticleDto from(Article entity) {
+        return new ArticleDto(
+                entity.getId(),
+                UserAccountDto.from(entity.getUserAccount()),
+                entity.getTitle(),
+                entity.getContent(),
+                entity.getHashtag(),
+                entity.getCreatedAt(),
+                entity.getCreatedBy(),
+                entity.getModifiedAt(),
+                entity.getModifiedBy()
+        );
+    }
+
+    /* 위에거랑 반대. dto 를 주면 엔티티를 생성하는 메서드 */
+    // DTO 정보로 부터 엔티티를 하나 만들어서 세이브 하는 코드임
+/*추가*/
+    /** 기존코드는 toEntity() 를 실행하면, 여기서 또 UserAccountDto 에 있는 toEntity() 를 부르면서 타고 들어가게 했었는데, 지금은 toEntity 에 다이렉트로 매개변수 UserAccount를 받아서 별도로 다른데로 타고 들어갈 필요가 없도록 만들었다.   */
+    public Article toEntity(UserAccount userAccount) {
+        return Article.of(
+                userAccount,
+                title,
+                content,
+                hashtag
+        );
+    }
+
+/*삭제*/
+//    public Article toEntity() {
+//        return Article.of(
+//                userAccountDto.toEntity(),
+//                title,
+//                content,
+//                hashtag
+//        );
+//    }
 }
+
+
+
+
+
+
+
+
+
+

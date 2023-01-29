@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<thlogic>
+    <attr sel="#header" th:replace="header :: #header" />
+    <attr sel="#footer" th:replace="footer :: #footer" />
+`
+    <attr sel="#article-main" th:object="${article}">
+        <!-- 글제목-->
+        <attr sel="#article-header/h2" th:text="*{id} + ', ' + *{title}" />
+
+        <!--  ${article.title} 인데 *{} 를 이용해서 줄여서 쓸 수 있다.
+            ${article.title} => *{title} 로 대체 가능
+          -->
+        <!-- aside-->
+        <attr sel="#nickname" th:text="*{nickname}" />
+        <attr sel="#email" th:text="*{email}" />
+        <attr sel="#created-at" th:datetime="*{createdAt}" th:text="*{#temporals.format(createdAt, 'yyyy-MM-dd HH:mm:ss')}" />
+        <attr sel="#hashtag" th:text="*{hashtag}" />
+
+        <!-- 본문 글-->
+        <attr sel="#content-body/p" th:text="*{content}" />
+
+       <!-- 이렇게도 사용 가능
+        <attr sel="#article-header/h2" th:text="${article.title}" />
+        <attr sel="#nickname" th:text="${article.nickname}" />
+        <attr sel="#email" th:text="${article.email}" />
+        <attr sel="#created-at" th:datetime="${article.createdAt}" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm:ss')}" />
+        <attr sel="#hashtag" th:text="${article.hashtag}" />
+        <attr sel="#content-body" th:text="${article.content}" />-->
+
+<!--*************************************************-->
+<!-- 추가 - 수정, 삭제 버튼-->
+    <attr sel="#article-buttons">
+        <attr sel="#delete-article-form"
+            th:action="'/articles/'+ *{id} +'/delete'"
+            th:method="POST">
+
+            <attr sel="#update-article"
+                  th:href="'/articles/'+ *{id} +'/form'" />
+
+        </attr>
+    </attr>
+
+    <!-- 댓글 쓰는 부분 form 에 action 달기
+        고정되는 주소라 html 파일에 직접 넣어도 됨.
+        근데 어떤건 html 에 있고, 어떤건 th.xml 에서 넣어주고 하면 나중에 유지보수 할때 파일 두개 다 확인해가면서 작업해야함. 아무튼 그거슨 선택!
+        -->
+    <attr sel="#comment-form" th:action="@{/comments/new}" th:method="post">
+        <attr sel="#comment-textbox" th:name="content" />
+    </attr>
+
+    <!-- 각 댓글들에 달릴 현재 게시글 id-->
+    <attr sel=".article-id" th:name="articleId" th:value="*{id}" />
+<!-- 여기까지 새로 추가한거. -->
+<!-- ******************************************************* -->
+
+
+
+
+
+        <!-- 댓글 -->
+        <attr sel="#article-comments" th:remove="all-but-first">
+            <attr sel="li[0]" th:each="articleComment : ${articleComments}">
+<!-- form 에 삭제 버튼 관련 추가됨-->
+                <attr sel="form" th:action="'/comments/' + ${articleComment.id} + '/delete'" th:method="post">
+                    <attr sel="div/strong" th:text="${articleComment.nickname}" />
+                    <attr sel="div/small/time" th:datetime="${articleComment.createdAt}" th:text="${#temporals.format(articleComment.createdAt, 'yyyy-MM-dd HH:mm:ss')}" />s
+                    <attr sel="div/p" th:text="${articleComment.content}" />
+                </attr>
+            </attr>
+        </attr>
+
+
+
+        <!-- 페이징 -->
+        <attr sel="#pagination">
+            <attr sel="ul">
+                <attr sel="li[0]/a"
+                      th:href="@{${article.id} - 1 <= 0 ? '#': |/articles/*{id - 1}|}"
+                      th:class="'page-link' + (*{id} - 1 <= 0 ? ' disabled': '')"
+
+                />
+                <attr sel="li[1]/a"
+                      th:href="@{*{id} >= ${totalCount} ? '#': |/articles/*{id + 1}|}"
+                      th:class="'page-link' + (*{id}  >= ${totalCount} ? ' disabled': '')"
+                />
+            </attr>
+        </attr>
+
+    </attr>
+
+
+</thlogic>
+
+
+
+
+
+
+
+
+
+
+
+
+

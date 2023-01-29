@@ -22,13 +22,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	// spring security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	// thymeleaf
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	//security + thymeleaf
+	// spring security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// security + thymeleaf
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
-	//security-test
 	testImplementation 'org.springframework.security:spring-security-test'
 
 
@@ -37,16 +36,16 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
-	// Rest, Rest HAL 추가
+	// rest, rest HAL
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	implementation 'org.springframework.data:spring-data-rest-hal-explorer'
-	
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	// queryDSL 설정 (아래에 관련 내용 더 있음)
+	// queryDSL 설정 (저 밑에도 하나 더 있음)
 	implementation "com.querydsl:querydsl-jpa"
 	implementation "com.querydsl:querydsl-core"
 	implementation "com.querydsl:querydsl-collections"
@@ -54,16 +53,18 @@ dependencies {
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 대응 코드
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api" // java.lang.NoClassDefFoundError (javax.annotation.Entity) 대응 코드
 
-} 
+}
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
+
 //////////////  queryDSL 설정부  시작 ////////////////////////////
 // queryDSL 설정
-// 이 부분은 없더라도 queryDSL은 정상동작한다. 그러나 인텔리제이에서 build 하다가 가끔씩 이슈가 터져서 작성해주는 부분이다.
-def generated = 'src/main/generated' // 파일 경로를 지정해주는 것. 원래는 실행하면 알아서 generated 폴더가 만들어진다. (안생기면 직접 생성하자)
+// 이게 없어도 queryDSL은 정상동작하긴 한다. 그러나 인텔리제이에서 build 하다가 가끔씩 이슈가 터져서 별도의 설정을 추가한거임
+def generated = 'src/main/generated'  // 파일 경로를 지정해주는거. 원래는 실행하면 알아서 generated 폴더가 만들어진다.
+											// 우리는 건드릴건 없지만. 인텔리제이에 안생기면 그냥 generated 폴더 수동으로 만들어놓기
 
 // queryDSL QClass 파일 생성 위치를 지정
 tasks.withType(JavaCompile) {
@@ -79,5 +80,4 @@ sourceSets {
 clean {
 	delete file(generated)
 }
-
-/* 이거 넣고 우측탭의 Gradle > Tasks > build > build 더블클릭 하면 generated 폴더 생길것이다. */
+/* 이거 넣고 우측탭의 Gradle > Tasks > build > build 더블클릭 하면 generated 폴더 생길거임 */

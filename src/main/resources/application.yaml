@@ -1,50 +1,56 @@
+# JPA 에 접근하기 위한 프로퍼티들을 세팅
+# yaml은 xml이나 json 같이 데이터를 주고 받을 때 사용하는 포맷이 정의되어 있는 파일 형식.
+# xml이나 json보다 코드가 간결하다. 쿠버네티스 에서도 yaml을 권장하고 있다.
 
-
-debug: false
-management.endpoints.web.exposure.include: "*"
+debug: false # 스프링 부트의 모든 디버그 로그를 다 볼 수 있게 할건지 말건지 결정. 너무 많아서 일단 false로 놓고 한다.
+management.endpoints.web.exposure.include: "*" # actuator의 endpoint에 감춰져있는 것들을 다 볼 수 있게한다.(그래야 개발할 때 보고싶은 기능들 다 볼 수 있다.)
 
 logging:
   level:
-    com.com.bitstudy.app: debug
-    org.springframework.web.servlet: debug
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    com.com.bitstudy.app: debug # 루트 패키지에서 발행하는 모든 로그는 debug 레벨로 보겠다는 뜻
+    org.springframework.web.servlet: debug # 맨 위에 debug와 관련있는 것. 맨위를 false로 놓고 request, response 로그만 따로 뽑아 보겠다는 뜻
+    org.hibernate.type.descriptor.sql.BasicBinder: trace # JPA 기술을 사용할 때 쿼리 로그를 디버그 로그로 관찰할 수 있는데 이때 안에 들어가는 파라미터들이 다 물음표로 나온다. 그걸 볼 수 있게 해주는 것.(TODO : 이슈 확인 필요)
 
 spring:
   datasource:
-    # MySQL 사용할 때
     url: jdbc:mysql://localhost:3306/board
     username: bitstudy
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-    # h2 DB 를 사용 할 때 아래와 같이 설정
+    # h2 DB 를 사용할때 사용
 #    url: jdbc:h2:mem:testdb
 #    username: sa
 #    driver-class-name: org.h2.Driver
+
   jpa:
-    defer-datasource-initialization: true
-    hibernate.ddl-auto: create
-    show-sql: true
+    defer-datasource-initialization: true # test용 데이터베이스의 데이터를 생성할 수 있게 해줌. 나중에 resources 안에 data.sql(무조건 있어야 한다) 파일 만들어서 DB에 초기 데이터를 테스트용으로 넣을 수 있다.
+    hibernate.ddl-auto: create # 엔티티를 보고 테이블 데이터를 유추해서 자동으로 DDL 데이터를 만들어준다. domain > Article 엔티티를 보고 CREATE TABLE 구문을 만들어서 테스트 실행될 때마다 자동으로 Article과 ArticleComment 테이블을 생성.(우리가 별도로 짜지 않아도 됨)
+    show-sql: true # 디버그 모드에서 sql 문장을 보여줄건지?
     properties:
       hibernate.format_sql: true
       hibernate.default_batch_fetch_size: 100
 
 
-  h2.console.enabled: false
-  # h2.console.enabled: true # h2 DB를 사용할 때 true
-  sql.init.mode: always
-
+  h2.console.enabled: false # H2 콘솔을 활성화 할건지 정하는 부분
+#  h2.console.enabled: true # h2 DB 를 사용할때 사용
+  sql.init.mode: always # data.sql 을 언제 작동하게 할건지 결정하는 부분
+  # never(절대 사용안함), always(실제 환경에서), embedded(테스트 때 만)
+  # (강의 예제니까 실제 화면에서 볼 때도 테스트 때 사용했던 데이터들도 이용할거라서 always로 설정)
+  
   # data rest 세팅
   data:
     rest:
-      base-path: /api # 우리가 엑셀에서 설계한 루트 url보면 /api 로 되어있다. 그거 쓰면 된다.
+      base-path: /api # 우리가 엑셀에서 설계한 루트 url 보면 /api 로 되어있다. 그거 쓰면 됨
       detection-strategy: annotated
-      # detection-strategy - 프로젝트의 레포지토리를 확인할건데, 이 레포지토리를 rest api로 노출시킬건지 결정하는 부분
-      # DEFAULT - 모든 PUBLIC 레포지토리 인터페이스를 표시할건데, 그러나 @(Repository)RestResource 가 포함된 것만 노출
-      # ALL - 모든 레포지토리 
-      # ANNOTATED - 지정한 것만 노출
-      # VISIBILITY - 레포지토리를 public 으로 노출한 것만
+      # detection-strategy : 프로젝트의 레포지토리를 확인할건데, 이 레포지토리를 rest api 로 노출시킬건지 결정하는 부분
+      #  DEFAULT - 모든 public 레포지토리 인터페이스를 표시할건데, 그러나 @(Repository)RestResource 가 포함된것만 노출
+      #  ALL - 모든 레포지토리
+      #  ANNOTATED - 지정한 것만 노출
+      #  VISIBILITY - 레포포지토리를 public 으로 노출한것만
 
-  thymeleaf3: # thymeleaf3 이름은  @ConfigurationProperties("spring.thymeleaf3") 에서 가져온 것이다.
-    decoupled-logic: true
 
+
+
+  thymeleaf3: # thymeleaf3 이름은 @ConfigurationProperties("spring.thymeleaf3") 에서 가져옴
+      decoupled-logic: true # false 로 주면 타임리프 기능 사용 안한다는 뜻

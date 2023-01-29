@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- 할일: 헤더에 로그인 로그아웃 버튼 추가 -->
+
+<header class="p-3 text-bg-dark" id="header">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
+
+            </ul>
+
+            <!-- 로그인 하면 유저네임 보이게 할거고, 버튼은 모양만 버튼으로 하고 a 태그로 바꿈-->
+            <div class="text-end">
+                <span id="username" class="text-white me-2">username</span>
+                <a role="button" id="login" class="btn btn-outline-light me-2">Login</a>
+                <a role="button" id="logout" class="btn btn-outline-light me-2">Logout</a>
+            </div>
+        </div>
+    </div>
+</header>
+</body>
+</html>

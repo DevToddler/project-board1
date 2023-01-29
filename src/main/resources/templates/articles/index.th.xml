@@ -1,11 +1,22 @@
 <?xml version="1.0"?>
 <thlogic>
+
+    <!--****************************************-->
+    <!-- 할일: 로그인이 되어있는 경우에만 글쓰기 버튼을 인증 여부에 따라 나타나거나 사라지게 설정한다.
+            #write-article 이부분 보면 됨  -->
+
+    <!-- 다 하면 detail.html 가서 수정 삭제 버튼 로그인한 유저가 글쓴이일때만 나타나게 바꾼다.-->
+    <!--****************************************-->
+
+
     <attr sel="#header" th:replace="header :: #header" />
     <attr sel="#footer" th:replace="footer :: #footer" />
 
-
     <attr sel="main" th:object="${articles}" >
+
+
         <!-- 검색 부분 -->
+        <attr sel="#search-form" th:action="@{/articles}" th:method="get" />
         <attr sel="#search-type" th:remove="all-but-first">
             <attr sel="option[0]"
                   th:each="searchType : ${searchTypes}"
@@ -14,7 +25,7 @@
                   th:text="${searchType.description}"
             />
         </attr>
-        <attr sel="#search-value" th:value="${param.searchValue}"/>
+        <attr sel="#search-value" th:value="${param.searchValue}" />
 
         <!-- 데이터 맵핑 -->
         <attr sel="#article-table">
@@ -22,11 +33,14 @@
             <attr sel="thead/tr">
                 <attr sel="th.title/a"
                       th:text="'제목'"
-                      th:href="@{/articles(
-                            page=${articles.number},
-                            sort='title' + (*{sort.getOrderFor('title')} != null ? (*{sort.getOrderFor('title').direction.name} != 'DESC' ? ',desc' : '') : ''),
-                            searchType=${param.searchType},
-                            searchValue=${param.searchValue}
+                      th:href="@{/articles(page=${articles.number}, sort='title'
+                     + (*{sort.getOrderFor('title')} != null ? (*{sort.getOrderFor('title').direction.name} != 'DESC' ? ',desc' : '') : '')
+
+                     ,
+                     searchType=${param.searchType},
+                     searchValue=${param.searchValue}
+
+
                 )}" />
                 <!-- 해설:
                  1) page=${articles.number}, number 는 ArticleController.java 에서
@@ -39,29 +53,35 @@
                     *{sort.getOrderFor('title').direction.name =>
                  -->
                 <attr sel="th.hashtag/a" th:text="'해시태그'" th:href="@{/articles(page=${articles.number}, sort='hashtag'
-                     + (*{sort.getOrderFor('hashtag')} != null ? (*{sort.getOrderFor('hashtag').direction.name} != 'DESC' ? ',desc' : '') : ''),
-                            searchType=${param.searchType},
-                            searchValue=${param.searchValue}
+                     + (*{sort.getOrderFor('hashtag')} != null ? (*{sort.getOrderFor('hashtag').direction.name} != 'DESC' ? ',desc' : '') : '')
+                     ,
+                     searchType=${param.searchType},
+                     searchValue=${param.searchValue}
                 )}" />
                 <attr sel="th.user-id/a" th:text="'작성자'" th:href="@{/articles(page=${articles.number}, sort='userAccount.userId'
-                     + (*{sort.getOrderFor('userAccount.userId')} != null ? (*{sort.getOrderFor('userAccount.userId').direction.name} != 'DESC' ? ',desc' : '') : ''),
-                            searchType=${param.searchType},
-                            searchValue=${param.searchValue}
+                     + (*{sort.getOrderFor('userAccount.userId')} != null ? (*{sort.getOrderFor('userAccount.userId').direction.name} != 'DESC' ? ',desc' : '') : '')
+                     ,
+                     searchType=${param.searchType},
+                     searchValue=${param.searchValue}
                 )}" />
                 <!-- 해설: sort='userAccount.userId'
                             userId 또는 nickname 은 UserAccount 에서 가져오는거기 때문에 UserAccount.userId 라고 써야함
                 -->
-                <attr sel="th.created-at/a" th:text="'작성일'" th:href="@{/articles(page=${articles.number}, sort='createdDate'
-                     + (*{sort.getOrderFor('createdDate')} != null ? (*{sort.getOrderFor('createdDate').direction.name} != 'DESC' ? ',desc' : '') : ''),
-                            searchType=${param.searchType},
-                            searchValue=${param.searchValue}
+
+
+                <attr sel="th.created-at/a" th:text="'작성일'" th:href="@{/articles(page=${articles.number}, sort='createdAt'
+                     + (*{sort.getOrderFor('createdAt')} != null ? (*{sort.getOrderFor('createdAt').direction.name} != 'DESC' ? ',desc' : '') : '')
+                     ,
+                     searchType=${param.searchType},
+                     searchValue=${param.searchValue}
                 )}" />
+
             </attr>
 
 
             <attr sel="tbody" th:remove="all-but-first">
-                <!-- tbody 안에 있는 tr 들을 첫번째요소(tr) 빼고 다 지우기
-                한나만 남겨놓은 이유: 기본 포멧이 필요해서임-->
+            <!-- tbody 안에 있는 tr 들을 첫번째요소(tr) 빼고 다 지우기
+            한나만 남겨놓은 이유: 기본 포멧이 필요해서임-->
 
                 <attr sel="tr[0]" th:each="article : ${articles}">
                     <!-- each 는 향상된 for 문과 같다.
@@ -76,7 +96,7 @@
                     <attr sel="td.title/a" th:text="${article.title}" th:href="@{'/articles/'+${article.id}}" />
                     <attr sel="td.hashtag/a" th:text="${article.hashtag}" th:href="@{'/articles/'+${article.id}}" />
                     <attr sel="td.user-id/a" th:text="${article.nickname}" th:href="@{'/articles/'+${article.id}}" />
-                    <attr sel="td.created-at/time" th:datetime="${article.createdDate}" th:text="${#temporals.format(article.createdDate, 'yyyy-MM-dd')}"
+                    <attr sel="td.created-at/time" th:datetime="${article.createdAt}" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd')}"
                     />
                     <!-- temporals: 유틸리티. 여러가지 포멧을 지원하고. 시간관련 정보를 다루는 함수들을 제공. 그중에 하나가 format -->
 
@@ -84,43 +104,61 @@
             </attr>
         </attr>
 
+
+<!--****************************************-->
+<!--이번엔 여기 하는거임 -->
+
+        <!-- 글쓰기 쓰면 이동할 페이지. get 방식으로 이동함. -->
+        <attr sel="#write-article" sec:authorize="isAuthenticated()" th:href="@{/articles/form}"></attr>
+        <!--
+            인증 되었을때만 버튼에 href 경로 준다.
+            이거 하고 브라우저 확인해보면 로그아웃 했을때 버튼이 아예 사라진다.
+
+            다 하면 detail.html 가서 수정 삭제 버튼 로그인한 유저가 글쓴이일때만 나타나게 바꾸자. -->
+
+<!--****************************************-->
+
+
         <!-- 페이징 -->
         <attr sel="#pagination">
             <attr sel="li[0]/a"
                   th:text="이전"
-                  th:href="@{/articles(page=${articles.number - 1},
-                            sort=${param.sort},
-                            searchType=${param.searchType},
-                            searchValue=${param.searchValue})}"
+                  th:href="@{/articles(page=${articles.number - 1}
+                     ,
+                     sort=${param.sort},
+                     searchType=${param.searchType},
+                     searchValue=${param.searchValue}   )} "
                   th:class="'page-link' + (${articles.number<=0}?' disabled':'')"
             />
-            <!--해설
-                th:href="@{/articles(page=${articles.number - 1})}"
-                이전 버튼이기 때문에 text 는 "이전" 이라는 글씨가 들어가야 하지만 링크는 여전히 현재 페이징에 나오고 있는 맨 앞 숫자 보다 1 작아야 한다.
-                이거 돌리면 <a href="/article?page=1" 이런식으로 나옴
+    <!--해설
+        th:href="@{/articles(page=${articles.number - 1})}"
+        이전 버튼이기 때문에 text 는 "이전" 이라는 글씨가 들어가야 하지만 링크는 여전히 현재 페이징에 나오고 있는 맨 앞 숫자 보다 1 작아야 한다.
+        이거 돌리면 <a href="/article?page=1" 이런식으로 나옴
 
-                th:class 부분에서 'disabled' 는 부트스트램에서 비활성화를 해주는 클래스
-                articles.number(현재 페이지)가 0 이면 '이전' 버튼이 비활성화 되게 함
-            -->
+        th:class 부분에서 'disabled' 는 부트스트램에서 비활성화를 해주는 클래스
+        articles.number(현재 페이지)가 0 이면 '이전' 버튼이 비활성화 되게 함
+    -->
             <attr sel="li[1]" th:class="page-item" th:each="pageNumber : ${paginationBarNumbers}">
-                <attr sel="a" th:text="${pageNumber + 1}" th:href="@{/articles(page=${pageNumber},
-                            sort=${param.sort},
-                            searchType=${param.searchType},
-                            searchValue=${param.searchValue})}" th:class="'page-link' + (${pageNumber} == ${articles.number}?' disabled':'')" />
+                <attr sel="a" th:text="${pageNumber + 1}" th:href="@{/articles(page=${pageNumber}
+                     ,
+                     sort=${param.sort},
+                     searchType=${param.searchType},
+                     searchValue=${param.searchValue})}" th:class="'page-link' + (${pageNumber} == ${articles.number}?' disabled':'')" />
                 <!--  /articles?page=?? -->
             </attr>
 
 
             <attr sel="li[2]/a"
                   th:text="다음"
-                  th:href="@{/articles(page=${articles.number + 1},
-                            sort=${param.sort},
-                            searchType=${param.searchType},
-                            searchValue=${param.searchValue})}"
+                  th:href="@{/articles(page=${articles.number + 1}
+                     ,
+                     sort=${param.sort},
+                     searchType=${param.searchType},
+                     searchValue=${param.searchValue})}"
                   th:class="'page-link' + (${articles.number} >= ${articles.totalPages - 1}?' disabled':'')"
             />
         </attr>
     </attr>
 </thlogic>
 
-        <!-- 디커플드 로직이 제대로 연결이 됐으면 'Ctrl + 파일명' 부분 클릭하면 해당 파일이 열린다.-->
+<!-- 디커플드 로직이 제대로 연결이 됐으면 'Ctrl + 파일명' 부분 클릭하면 해당 파일이 열린다.-->

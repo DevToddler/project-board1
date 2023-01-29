@@ -7,67 +7,76 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.util.Objects;
 
-/** 회원 관리에 대한 부분. Auditing 까지 연결해서 사용해야 함. */
+/** 할일: Long id  빼고 UserId 를 @Id 로 변경 */
 
-@Entity
 @Getter
 @ToString
 @Table(indexes = {
-		@Index(columnList = "userId"),
-		@Index(columnList = "email"),
-		@Index(columnList = "createdDate"),
-		@Index(columnList = "createdBy")
+/*삭제*/ //@Index(columnList = "userId", unique = true),
+        @Index(columnList = "email" , unique = true),
+        @Index(columnList = "createdAt"),
+        @Index(columnList = "createdBy")
 })
-public class UserAccount extends AuditingFields{
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+@Entity
+public class UserAccount extends AuditingFields {
 
-	@Setter
-	@Column(nullable = false, length = 50, unique = true)
-	private String userId;
+/*삭제*/
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
-	@Setter
-	@Column(nullable = false)
-	private String userPw;
+/*삭제*///@Setter @Column(nullable = false, length = 50) private String userId;
 
-	@Setter
-	@Column(length = 100)
-	private String email;
+/*추가*/ @Id @Column(length = 50) private String userId;
 
-	@Setter
-	@Column(length = 100)
-	private String nickname;
+    @Setter @Column(nullable = false) private String userPassword;
+    @Setter @Column(length = 100) private String email;
+    @Setter @Column(length = 100) private String nickname;
+    @Setter private String memo;
 
-	@Setter
-	private String memo;
+    ///////////////////////////////////////////////////////////
 
-	protected UserAccount(){}
 
-	private UserAccount(String userId, String userPw, String email, String nickname, String memo) {
-		this.userId = userId;
-		this.userPw = userPw;
-		this.email = email;
-		this.nickname = nickname;
-		this.memo = memo;
-	}
+    protected UserAccount() {}
 
-	public static UserAccount of(String userId, String userPw, String email, String nickname, String memo){
-		return new UserAccount(userId, userPw, email, nickname, memo);
-	}
+    private UserAccount(String userId, String userPassword, String email, String nickname, String memo) {
+        this.userId = userId;
+        this.userPassword = userPassword;
+        this.email = email;
+        this.nickname = nickname;
+        this.memo = memo;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		UserAccount that = (UserAccount) o;
-		return id.equals(that.id);
-	}
+    public static UserAccount of(String userId, String userPassword, String email, String nickname, String memo){
+        return new UserAccount(userId, userPassword, email, nickname, memo);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
+/*추가 - userId를 비교할때 that.id 가 제대로 동작하지 않아서 userId 비교가 되지 않는다.
+*       그래서 아래와 같이 getUserId() 를 써서 getter 로 값을 가져와서 비교하도록 변경했다. */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserAccount that)) return false;
+        return this.getUserId() != null && this.getUserId().equals(that.getUserId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getUserId());
+    }
+
+/*삭제*/
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        UserAccount that = (UserAccount) o;
+//        return userId.equals(that.userId);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(userId);
+//    }
 }
+

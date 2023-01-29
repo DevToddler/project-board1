@@ -5,12 +5,9 @@
     <title>Title</title>
 </head>
 <body>
-<!--<header id="header">
-    header 삽입부
-    <hr />
-</header>-->
+<!-- 할일: 헤더에 로그인 로그아웃 버튼 추가 -->
 
-<header  id="header" class="p-3 text-bg-dark">
+<header class="p-3 text-bg-dark" id="header">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
@@ -18,20 +15,21 @@
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="#" class="nav-link px-2 text-white <!--text-secondary-->">Home</a></li>
-                <!--<li><a href="#" class="nav-link px-2 text-white">Features</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">About</a></li>-->
+                <!-- href 경로 / 로 바꿈.
+
+                    로고나 메뉴바의 Home 을 누르면 원래는 메인페이지로 가야하는데 우리는 게시판 페이지밖에 없으니까
+                    경로는 일단 / 더라도 articles 페이지로 이동되게 바꾸자.
+                    MainController.java  로 ㄱㄱ
+                    -->
+                <li><a href="/" class="nav-link px-2 text-secondary">Home</a></li>
+
             </ul>
 
-            <!--<form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
-            </form>-->
-
+            <!-- 로그인 하면 유저네임 보이게 할거고, 버튼은 모양만 버튼으로 하고 a 태그로 바꿈-->
             <div class="text-end">
-                <button type="button" class="btn btn-outline-light me-2">Login</button>
-                <button type="button" class="btn btn-warning">Sign-up</button>
+                <span id="username" class="text-white me-2">username</span>
+                <a role="button" id="login" class="btn btn-outline-light me-2">Login</a>
+                <a role="button" id="logout" class="btn btn-outline-light me-2">Logout</a>
             </div>
         </div>
     </div>
